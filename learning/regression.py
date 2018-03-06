@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import pickle
 from matplotlib import style
 
+style.use('ggplot')
+
 # API Key for quandl datasets
 quandl.ApiConfig.api_key = '4vLqk_aXmFCTvhfk7pA_'
 
