@@ -19,9 +19,11 @@ def best_fit_slope_and_intercept (xs, ys):
     b = mean(ys) - m * mean(xs)
     return m, b
 
+# squared error function
 def squared_error(ys_orig, ys_line):
     return sum((ys_line - ys_orig) ** 2)
 
+# calculate coefficient of determination for regression line (finds r squared value)
 def determination_coefficient(ys_orig, ys_line):
     y_mean_line = [mean(ys_orig)] * len(ys_orig)
     squared_error_regr = squared_error(ys_orig, ys_line)
