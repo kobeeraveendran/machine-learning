@@ -2,11 +2,30 @@ from statistics import mean
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style
+import random
 
 style.use('fivethirtyeight')
 
 xs = np.array([1, 2, 3, 4, 5, 6], dtype = np.float64)
 ys = np.array([5, 4, 6, 5, 6, 7], dtype = np.float64)
+
+# dataset for testing prediction accuracy and best fit lines
+def create_dataset(num_points, variance, step_size = 2, correlation = False):
+    val = 1
+    ys = []
+
+    # results in list of a specified number of random points, no correlation
+    for i in range(num_points):
+        y = val + random.randrange(-variance, variance)
+        ys.append(y)
+        if correlation and correlation == 'pos':
+            val += step_size
+        elif correlation and correlation == 'neg':
+            val -= step_size
+    
+    xs = [i for i in range(len(ys))]
+
+    return np.array(xs, dtype = np.float64), np.array(ys, dtype = np.float64)
 
 def best_fit_slope_and_intercept (xs, ys):
     # numerator of eqn
@@ -30,6 +49,10 @@ def determination_coefficient(ys_orig, ys_line):
     squarred_error_y_mean = squared_error(ys_orig, y_mean_line)
 
     return 1 - squared_error_regr / squarred_error_y_mean
+
+xs, ys = create_dataset(40, 20, 2, correlation = 'pos')
+
+
 
 m, b = best_fit_slope_and_intercept(xs, ys)
 
