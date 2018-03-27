@@ -92,7 +92,7 @@ def forward_propagation(X, parameters):
 
 # cost function implementation using the cost equation:
 # -1/m * sum(y(i)log(a[2](i)) + (1 - y(i))log(1 - a[2](i)))
-# look up 'cross-entropy cost function' for easier-to-understand version
+# see 'cross-entropy-cost-function.png' for formatted version of equation
 def compute_cost(A2, Y, parameters):
     '''
     returns:
