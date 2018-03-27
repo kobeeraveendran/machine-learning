@@ -19,7 +19,7 @@ X, Y = load_planar_dataset()
 # visualize data
 #plt.scatter(X[0, :], X[1, :], c = Y, s = 40, cmap = plt.cm.Spectral)
 
-# for getting hapes of numpy arrays
+# for getting shapes of numpy arrays
 shape_X = X.shape
 shape_Y = Y.shape 
 m = Y.shape[1]
