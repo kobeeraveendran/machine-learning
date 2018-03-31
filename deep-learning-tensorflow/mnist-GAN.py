@@ -7,6 +7,9 @@ import os
 import scipy.misc
 import scipy
 
+# get rid of useless run-time warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
+
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 
