@@ -38,4 +38,13 @@ test_metrics = estimator.evaluate(input_fn = test_input_func, steps = 1000)
 print(test_metrics)
 
 new_data = np.linspace(0, 10, 10)
-input_fn_predict = tf.estimator.inputs.numpy_input_fn({'x'})
+input_fn_predict = tf.estimator.inputs.numpy_input_fn({'x':new_data}, shuffle = False)
+
+print(list(estimator.predict(input_fn = input_fn_predict)))
+
+predictions = []
+
+for pred in estimator.predict(input_fn = input_fn_predict):
+    predictions.append(pred['predictions'])
+
+print(predictions)
