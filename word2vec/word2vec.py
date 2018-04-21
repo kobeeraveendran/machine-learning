@@ -97,3 +97,34 @@ y_train = []        # output word
 for word in data:
     x_train.append(to_one_hot(word2int[word[0]], vocab_size))
     y_train.append(to_one_hot(word2int[word[1]], vocab_size))
+
+# convert to numpy arrays (helps for determining things like shape, and is formatted better)
+x_train = np.asarray(x_train)
+y_train = np.asarray(y_train)
+
+# print them to confirm the claim above
+# print(x_train)
+# print(y_train)
+
+# print shapes of each (useful for matrix operations): both should be (30,7)
+# print(x_train.shape)
+# print(y_train.shape)
+
+#####################################################################################
+
+# tensorflow stuff!
+
+# create the placeholders for x_train and y_train
+x = tf.placeholder(tf.float32, shape = (None, vocab_size))
+y_label = tf.placeholder(tf.float32, shape = (None, vocab_size))
+
+# convert the training data into the embedded representation
+
+# embedding dimension
+EMBEDDING_DIM = 7
+W1 = tf.Variable(tf.random_normal([vocab_size, EMBEDDING_DIM]))
+b1 = tf.Variable(tf.random_normal([EMBEDDING_DIM]))
+
+# this is the familiar A = Wx + b
+hidden_representation = tf.add(tf.matmul(x, W1), b1)
+
