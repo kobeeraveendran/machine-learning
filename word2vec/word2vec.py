@@ -4,6 +4,8 @@
 
 import numpy as np
 import tensorflow as tf
+# for getting training time
+from timeit import default_timer as timer
 
 corpus_raw = 'He is king . The king is royal . She is the royal queen '
 
@@ -135,6 +137,8 @@ prediction = tf.nn.softmax(tf.add(tf.matmul(hidden_representation, W2), b2))
 
 # now train!
 
+# to time training
+start = timer()
 # initialize variables
 init = tf.global_variables_initializer()
 
@@ -161,3 +165,7 @@ with tf.Session() as sess:
     print("W1 is: ", sess.run(W1))
     print('----------------------')
     print("b1 is: ", sess.run(b1))
+
+end = timer()
+elapsed = end - start
+print("TRAINING TIME: " + str(elapsed))
