@@ -128,3 +128,36 @@ b1 = tf.Variable(tf.random_normal([EMBEDDING_DIM]))
 # this is the familiar A = Wx + b
 hidden_representation = tf.add(tf.matmul(x, W1), b1)
 
+W2 = tf.Variable(tf.random_normal([EMBEDDING_DIM, vocab_size]))
+b2 = tf.Variable(tf.random_normal([vocab_size]))
+
+prediction = tf.nn.softmax(tf.add(tf.matmul(hidden_representation, W2), b2))
+
+# now train!
+
+# initialize variables
+init = tf.global_variables_initializer()
+
+# create tensorflow session
+with tf.Session() as sess:
+    sess.run(init)
+
+    # loss function
+    cross_entropy_loss = tf.reduce_mean(-tf.reduce_sum(y_label * tf.log(prediction), reduction_indices = [1]))
+
+    # training step
+    train_step = tf.train.GradientDescentOptimizer(0.1).minimize(cross_entropy_loss)
+
+    n_iters = 10000
+
+    # apply the cross_entropy_loss function to determine the losses
+    for _ in range(n_iters):
+        sess.run(train_step, feed_dict = {x: x_train, y_label: y_train})
+
+        print("Loss is: ", sess.run(cross_entropy_loss, feed_dict = {x: x_train, y_label: y_train}))
+
+    # after training, check out the values of the weights and biases (W1 and b1)
+    print('----------------------')
+    print("W1 is: ", sess.run(W1))
+    print('----------------------')
+    print("b1 is: ", sess.run(b1))
