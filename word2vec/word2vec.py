@@ -75,3 +75,25 @@ for sentence in sentences:
 
 # note that the value of word2int[word] is the index in the one-hot vector
 
+#####################################################################################
+
+# function to convert index numbers in a vocabulary into one-hot vectors for it
+def to_one_hot(hot_index, vocab_size):
+
+    temp = np.zeros(vocab_size)
+    temp[hot_index] = 1
+
+    return temp
+
+x_train = []        # input word
+y_train = []        # output word
+
+# this'll create a 2-D matrix of one-hot representations for every word
+# if you look at word[] above, you'll see that they are the word pairs we generated
+# earlier; you'll see that word[0] was one word from the sentence, and word[1] held 
+# the words that came before and after word[0] (as two separate elements of course)
+# so, x_train has the target word, and y_train has the words that can come before and 
+# after the target word
+for word in data:
+    x_train.append(to_one_hot(word2int[word[0]], vocab_size))
+    y_train.append(to_one_hot(word2int[word[1]], vocab_size))
