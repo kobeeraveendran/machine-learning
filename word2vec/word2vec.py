@@ -162,10 +162,27 @@ with tf.Session() as sess:
 
     # after training, check out the values of the weights and biases (W1 and b1)
     print('----------------------')
-    print("W1 is: ", sess.run(W1))
+    print("W1 is: \n", sess.run(W1))
     print('----------------------')
-    print("b1 is: ", sess.run(b1))
+    print("b1 is: \n", sess.run(b1))
 
 end = timer()
 elapsed = end - start
 print("TRAINING TIME: " + str(elapsed))
+
+# distance to the nearest vector given one vector
+def euclidean_dist(vec1, vec2):
+    return np.sqrt(np.sum((vec1 - vec2) ** 2))
+
+def find_closest(word_index, vectors):
+    min_dist = 10000000
+    min_index = -1
+
+    query_vector = vectors[word_index]
+
+    for index, vector in enumerate(vectors):
+        if euclidean_dist(vector, query_vector) < min_dist and not np.array_equal(vector, query_vector):
+            min_dist = euclidean_dist(vector, query_vector)
+            min_index = index
+
+    return min_index
