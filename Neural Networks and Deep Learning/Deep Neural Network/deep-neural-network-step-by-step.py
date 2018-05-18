@@ -38,3 +38,32 @@ def initialize_parameters(n_x, n_h, n_y):
                   'b2': b2}
     
     return parameters
+
+def initialize_parameters_deep(layer_dims):
+    '''
+    Arguments:
+        layer_dims = array of dimensions for each layer in the network
+    '''
+
+    np.random.seed(3)
+    parameters = {}
+    L = len(layer_dims)
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layer_dims[l], layer_dims[l - 1]) * 0.01
+        parameters['b' + str(l)] = np.zeros([layer_dims[l], 1])
+
+    return parameters
+
+def linear_forward(A, W, b):
+    '''
+    Arguments:
+        A = results from the activation functions of the previous layer
+        W = weights w/ shape (curr layer size, prev layer size)
+        b = biases w/ shape (curr layer size, 1)
+    '''
+    Z = np.dot(W, A) + b
+    zipped = (A, W, b)
+
+    return Z, zipped
+
