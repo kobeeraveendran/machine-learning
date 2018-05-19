@@ -63,7 +63,27 @@ def linear_forward(A, W, b):
         b = biases w/ shape (curr layer size, 1)
     '''
     Z = np.dot(W, A) + b
-    zipped = (A, W, b)
+    cache = (A, W, b)
 
-    return Z, zipped
+    return Z, cache
 
+def linear_activation_forward(A_prev, W, b, activation):
+    '''
+    Arguments:
+        A_prev = previous layer's activation function output
+        W = weights matrix w/ shape (curr_layer_size, prev_layer_size)
+        b = biases matrix w shape (curr_layer_size, 1)
+        activation = which activation function to use, in string format (i.e. 'sigmoid', 'relu')
+    '''
+
+    if activation == 'sigmoid':
+        Z, linear_cache = linear_forward(A_prev, W, b)
+        A, activation_cache = sigmoid(Z)
+
+    elif activation == 'relu':
+        Z, linear_cache = linear_forward(A_prev, W, b)
+        A, activation_cache = relu(Z)
+
+    cache = (linear_cache, activation_cache)
+
+    return A, cache
