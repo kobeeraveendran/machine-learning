@@ -87,3 +87,28 @@ def linear_activation_forward(A_prev, W, b, activation):
     cache = (linear_cache, activation_cache)
 
     return A, cache
+
+def L_model_forward(X, parameters):
+    '''
+    Arguments:
+        X = data in a numpy array w/ shape (input size, num_examples)
+        parameters = output of the initializer method
+    '''
+
+    caches = []
+    A = X
+    L = len(parameters) // 2
+
+    for l in range(1, L):
+        A_prev = A
+        W = parameters['W' + str(l)]
+        b = parameters['b' + str(l)]
+        A, cache = linear_activation_forward(A_prev, W, b, activation = 'relu')
+        caches.append(cache)
+
+    W = parameters['W' + str(L)]
+    b = parameters['b' + str(L)]
+    AL, cache = linear_activation_forward(A, W, b, activation = 'sigmoid')
+    caches.append(cache)
+
+    return AL, caches
