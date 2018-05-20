@@ -112,3 +112,17 @@ def L_model_forward(X, parameters):
     caches.append(cache)
 
     return AL, caches
+
+def compute_cost(AL, Y):
+    '''
+    Arguments:
+        AL = probability vector of predictions w/ shape (1, num_examples)
+        Y = vector of binary answers
+
+    '''
+    m = Y.shape[1]
+
+    cost = (-1 / m) * np.sum(np.multiply(Y, np.log(AL)) + np.multiply(1 - Y, np.log(1 - AL)))
+    cost = np.squeeze(cost)
+
+    return cost
