@@ -126,3 +126,19 @@ def compute_cost(AL, Y):
     cost = np.squeeze(cost)
 
     return cost
+
+def linear_backward(dZ, cache):
+    '''
+    Arguments:
+        dZ = gradient of cost w.r.t. the linear output
+        cache = cache of the values A_prev, W, and b from forward propagation stage
+    '''
+
+    A_prev, W, b = cache
+    m = A_prev.shape[1]
+
+    dW = (1 / m) * np.dot(dZ, A_prev)
+    db = (1 / m) * np.sum(dZ, axis = 1, keepdims = True)
+    dA_prev = np.dot(W.T, dZ)
+
+    return dA_prev, dW, db
