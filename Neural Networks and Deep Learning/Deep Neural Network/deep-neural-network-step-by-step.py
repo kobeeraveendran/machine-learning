@@ -142,3 +142,50 @@ def linear_backward(dZ, cache):
     dA_prev = np.dot(W.T, dZ)
 
     return dA_prev, dW, db
+
+def linear_activation_backward(dA, cache, activation):
+    '''
+    Arguments:
+        dA = post-activation gradient for current layer
+        cache = cache containing linear_cache, activation_cache
+        activation = determines which activation function to use (sigmoid or relu)
+    '''
+    linear_cache, activation_cache = cache
+
+    if activation == 'relu':
+        dZ = relu_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    elif activation == 'sigmoid':
+        dZ = sigmoid_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    return dA_prev, dW, db
+
+def L_model_backward(AL, Y, caches):
+    '''
+    Arguments:
+        AL = probability vector from forward prop (containing the guesses of the NN)
+        Y = binary vector of correct answers (classifications)
+        caches = list of caches from forward prop (linear_activation_forward() with relu [caches[l], 
+                 where l is between 0 and L - 1 (all layers except the last one)], and linear_activation_forward() 
+                 with sigmoid [caches[L - 1]])
+    '''
+
+    grads = {}
+    L = len(caches)
+    m = AL.shape[1]
+    Y = Y.reshape(AL.shape)
+
+    dAL = - (np.divide(y, AL) = np.divide(1 - Y, 1 - AL)) # derivative of cost w.r.t. AL
+    current_cache = caches[L - 1]
+    grads['dA' + str(L)], grads['dW' + str(L)] = linear_activation_backward(dAL, current_cache, activation = 'sigmoid')
+
+    for l in reversed(range(L - 1)):
+        current_cache = caches[l]
+        dA_prev_temp, dW_temp, db_temp = linear_activation_backward(dAL, current_cache, activation = 'relu')
+        grads['dA' + str(l + 1)] = dA_prev_temp
+        grads['dW' + str(l + 1)] = dW_temp
+        grads['db' + str(l + 1)] = db_temp
+
+    return grads
