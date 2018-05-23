@@ -189,3 +189,18 @@ def L_model_backward(AL, Y, caches):
         grads['db' + str(l + 1)] = db_temp
 
     return grads
+
+def update_parameters(parameters, grads, learning_rate):
+    '''
+    Arguments:
+    parameters = dictionary of parameters
+    grads = dictionary of gradients used to update parameters
+    '''
+
+    L = len(parameters)
+
+    for l in range(L):
+        parameters['W' + str(l + 1)] = parameters['W' + str(l + 1)] - learning_rate * parameters['dW' + str(l + 1)]
+        parameters['b' + str(l + 1)] = parameters['b' + str(l + 1)] - learning_rate * parameters['db' + str(l + 1)]
+
+    return parameters
