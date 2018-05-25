@@ -93,6 +93,14 @@ def linear_activation_forward(A_prev, W, b, activation):
 
     return A, cache
 
+def compute_cost(AL, Y):
+    m = Y.shape[1]
+
+    cost = (-1 / m) * np.sum(np.multiply(Y, np.log(AL)) + np.mulitply(1 - Y, np.log(1 - AL)))
+    cost = np.squeeze(cost)
+
+    return cost
+
 # L-layer neural network
 
 def initialize_parameters_deep(layer_dims):
