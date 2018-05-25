@@ -9,14 +9,38 @@ Created on Wed May 16 20:41:32 2018
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
-from testCases_v2 import *
-from dnn_utils_v2 import sigmoid, sigmoid_backward, relu, relu_backward
 
 plt.rcParams['figure.figsize'] = (5.0, 4.0)
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 
+# helper functions
+def sigmoid(Z):
+    A = 1 / (1 + np.exp(-Z))
+    cache = Z
 
+    return A, cache
+
+def relu(Z):
+    A = np.maximum(0, Z)
+    cache = Z
+
+    return A, cache
+
+def sigmoid_backward(dA, cache):
+    Z = cache
+    s = sigmoid(Z)
+    dZ = dA * s * (1 - s)
+
+    return dZ
+
+def relu_backward(dA, cache):
+    Z = cache
+    dZ = np.array(dA, copy = True)
+    dZ[Z <= 0] = 0
+
+    return dZ
+    
 def initialize_parameters(n_x, n_h, n_y):
     '''
     Arguments:
@@ -177,9 +201,9 @@ def L_model_backward(AL, Y, caches):
     m = AL.shape[1]
     Y = Y.reshape(AL.shape)
 
-    dAL = - (np.divide(y, AL) = np.divide(1 - Y, 1 - AL)) # derivative of cost w.r.t. AL
+    dAL = - (np.divide(y, AL) + np.divide(1 - Y, 1 - AL)) # derivative of cost w.r.t. AL
     current_cache = caches[L - 1]
-    grads['dA' + str(L)], grads['dW' + str(L)] = linear_activation_backward(dAL, current_cache, activation = 'sigmoid')
+    grads['dA' + str(L)], grads['dW' + str(L)], grads['db' + str(L)] = linear_activation_backward(dAL, current_cache, activation = 'sigmoid')
 
     for l in reversed(range(L - 1)):
         current_cache = caches[l]
