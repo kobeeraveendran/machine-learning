@@ -41,3 +41,30 @@ test_x = test_x_flatten / 255
 
 print("train_x's shape: " + str(train_x.shape))
 print("test_x's shape: " + str(test_x.shape))
+
+# 2 layer neural network and L-layer neural network
+# input is (63, 63, 3) flattened to (12288, 1)
+
+# General Methodology
+# 1. init parameters, define hyperparameters
+# 2. loop for num_iterations:
+#       a. forward prop
+#       b. compute costs
+#       c. backward prop
+#       d. update parameters (using parameters and grads from backprop)
+# 3. Use trained parameters to predict labels
+
+# 2 layer neural net
+
+
+
+def initialize_parameters_deep(layer_dims):
+    np.random.seed(3)
+    parameters = {}
+    L = len(layer_dims)
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layer_dims[l], layer_dims[l - 1]) * 0.01
+        parameters['b' + str(l)] = np.zeros([layer_dims[l], 1])
+
+    return parameters
