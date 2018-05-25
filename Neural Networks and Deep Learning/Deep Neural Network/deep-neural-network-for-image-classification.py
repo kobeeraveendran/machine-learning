@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import scipy
 from PIL import Image
 from scipy import ndimage
-from dnn_app_utils_v2 import *
 
 plt.rcParams['figure.figsize'] = (5.0, 4.0)
 plt.rcParams['image.interpolation'] = 'nearest'
@@ -75,10 +74,30 @@ def linear_forward(A, W, b):
     return Z, cache
 
 def sigmoid(Z):
-    return 1 / (1 + np.exp(-Z))
+    A =  1 / (1 + np.exp(-Z))
+    cache = Z
+
+    return A, cache
 
 def relu(Z):
-    return max(0, Z)
+    A = np.maximum(0, Z)
+    cache = Z
+
+    return A, cache
+
+def sigmoid_backward(dA, cache):
+    Z = cache
+    s = sigmoid(Z)
+    dZ = dA * s * (1 - s)
+
+    return dZ
+
+def relu_backward(dA, cache):
+    Z = cache
+    dZ = np.array(dA, copy = True)
+    dZ[Z <= 0] = 0
+
+    return dZ
 
 def linear_activation_forward(A_prev, W, b, activation):
     if activation == 'sigmoid':
@@ -100,6 +119,19 @@ def compute_cost(AL, Y):
     cost = np.squeeze(cost)
 
     return cost
+
+def linear_activation_backward(dA, cache, activation):
+    linear_cache, activation_cache = cache
+
+    if activation == 'relu':
+        dZ = relu_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    elif activation == 'sigmoid':
+        dZ = sigmoid_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    return dA_prev, dW, db
 
 # L-layer neural network
 
