@@ -68,6 +68,31 @@ def initialize_parameters(n_x, n_h, n_y):
 
     return parameters
 
+def linear_forward(A, W, b):
+    Z = np.dot(W, A) + b
+    cache = (A, W, b)
+
+    return Z, cache
+
+def sigmoid(Z):
+    return 1 / (1 + np.exp(-Z))
+
+def relu(Z):
+    return max(0, Z)
+
+def linear_activation_forward(A_prev, W, b, activation):
+    if activation == 'sigmoid':
+        Z, linear_cache = linear_forward(A_prev, W, b)
+        A, activation_cache = sigmoid(Z)
+
+    elif activation = 'relu':
+        Z, linear_cache = linear_forward(A_prev, W, b)
+        A, activation_cache = relu(Z)
+    
+    cache = (linear_cache, activation_cache)
+
+    return A, cache
+
 # L-layer neural network
 
 def initialize_parameters_deep(layer_dims):
