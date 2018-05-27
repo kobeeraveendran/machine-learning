@@ -133,6 +133,15 @@ def linear_activation_backward(dA, cache, activation):
 
     return dA_prev, dW, db
 
+def update_parameters(parameters, grads, learning_rate):
+    L = len(parameters)
+
+    for l in range(L):
+        parameters['W' + str(l + 1)] = parameters['W' + str(l + 1)] - learning_rate * parameters['dW' + str(l + 1)]
+        parameters['b' + str(l + 1)] = parameters['b' + str(l + 1)] - learning_rate * parameters['db' + str(l + 1)]
+
+    return parameters
+
 # L-layer neural network
 
 def initialize_parameters_deep(layer_dims):
