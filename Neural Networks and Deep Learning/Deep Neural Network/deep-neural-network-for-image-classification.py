@@ -142,6 +142,70 @@ def update_parameters(parameters, grads, learning_rate):
 
     return parameters
 
+def two_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 3000, print_cost = False):
+    '''
+    Arguments:
+    X = input data w/ shape (n_x, num_examples)
+    Y = label for correct answers w/ shape (1, num_examples)
+    layers_dims = dimensions of layers w/ shape (n_x, n_h, n_y)
+    num_iterations = number of iterations in optimization loop
+    learning_rate = learning rate of update rule
+    print_cost = prints cost if true, nothing if false
+    '''
+
+    np.random.seed(1)
+    grads = {}
+    costs = []
+    m = X.shape[1]
+    (n_x, n_h, n_y) = layers_dims
+
+    parameters = initialize_parameters(n_x, n_h, n_y)
+
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+
+    # gradient descent
+    for i in range(0, num_iterations):
+        A1, cache1 = linear_activation_forward(X, W1, b1, activation = 'relu')
+        A2, cache2 = linear_activation_forward(A1, W2, b2, activation = 'sigmoid')
+
+        # compute costs
+        cost = compute_cost(A2, Y)
+
+        dA2 = - (np.divide(Y, A2) - np.divide(1 - Y, 1 - A2))
+
+        # backpropagation
+        dA1, dW2, db2 = linear_activation_backward(dA2, cache2, activation = 'sigmoid')
+        dA0, dW1, db1 = linear_activation_backward(dA1, cache1, activation = 'relu')
+
+        grads['dW1'] = dW1
+        grads['db2'] = db1
+        grads['dW2'] = dW2
+        grads['db2'] = db2
+
+        # update parameters
+        parameters = update_parameters(parameters, grads, learning_rate)
+
+        W1 = parameters['W1']
+        b1 = parameters['b1']
+        W2 = parameters['W2']
+        b2 = parameters['b2']
+
+        if print_cost and i % 100 == 0:
+            print('Cost after iteration {}: {}'.format(i, np.squeeze(cost)))
+            costs.append(cost)
+
+    plt.plot(np.squeeze(costs))
+    plt.ylabel('cost')
+    plt.xlable('iterations (per tens)')
+    plt.title('learning rate = ' + str(learning_rate))
+    plt.show()
+
+    return parameters
+
+
 # L-layer neural network
 
 def initialize_parameters_deep(layer_dims):
