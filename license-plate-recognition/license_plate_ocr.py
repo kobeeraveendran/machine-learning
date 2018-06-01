@@ -1,5 +1,8 @@
+import numpy as np
 from skimage.io import imread
+from skimage.transform import resize
 from skimage.filters import threshold_otsu
+from skimage import util
 from skimage import measure
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -42,12 +45,28 @@ for region in measure.regionprops(label_image):
 
     # check to ensure it satisfies the license plate conditions above
     if region_height >= min_height and region_height <= max_height and region_width >= min_width and region_width <= max_width:
-        plate_like_objects.append(binary_car_image[minRow: maxRow, minCol: maxCol])
+        plate_like_objects.append(binary_car_image[minRow:maxRow, minCol:maxCol])
         plate_objects_coordinates.append((minRow, minCol, maxRow, maxCol))
+        print(region.bbox)
 
         rectBorder = patches.Rectangle((minCol, minRow), maxCol - minCol, maxRow - minRow, edgecolor = 'red', linewidth = 2, fill = False)
         ax1.add_patch(rectBorder)
 
+# from observing the image with bounding boxes, I determined the license plate was plate_like_objects[4]
+# the need for manual observation will be removed later
+license_plate = util.invert(plate_like_objects[4])
+
+labelled_plate = measure.label(license_plate)
+
+fig, (ax1) = plt.subplots(1)
+ax1.imshow(labelled_plate, cmap = 'gray')
+
+character_dimensions = (0.35 * license_plate.shape[0], 0.60 * license_plate.shape[0], 0.05 * license_plate.shape[1], 0.15 * license_plate.shape[1])
+min_height, max_height, min_width, max_width = character_dimensions
+
+characters = []
+counter = 0
+column_list = []
 
 
 
