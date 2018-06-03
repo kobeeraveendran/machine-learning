@@ -1,9 +1,13 @@
+import os
 import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
 from skimage.filters import threshold_otsu
 from skimage import util
 from skimage import measure
+from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
+from sklearn.externals import joblib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -58,16 +62,54 @@ license_plate = util.invert(plate_like_objects[4])
 
 labelled_plate = measure.label(license_plate)
 
-fig, (ax1) = plt.subplots(1)
-ax1.imshow(labelled_plate, cmap = 'gray')
+fig, (ax2) = plt.subplots(1)
+ax2.imshow(license_plate, cmap = 'gray')
 
-character_dimensions = (0.35 * license_plate.shape[0], 0.60 * license_plate.shape[0], 0.05 * license_plate.shape[1], 0.15 * license_plate.shape[1])
+character_dimensions = (0.35 * license_plate.shape[0], 0.90 * license_plate.shape[0], 0.05 * license_plate.shape[1], 0.90 * license_plate.shape[1])
 min_height, max_height, min_width, max_width = character_dimensions
 
 characters = []
 counter = 0
 column_list = []
 
+for regions in measure.regionprops(labelled_plate):
+    y0, x0, y1, x1 = regions.bbox
+    region_width = x1 - x0
+    region_height = y1 - y0
+
+    if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
+        roi = license_plate[y0:y1, x0:x1]
+
+        rect_border = patches.Rectangle((x0, y0), x1 - x0, y1 - y0, edgecolor = 'red', linewidth = 2, fill = False)
+        
+        ax2.add_patch(rect_border)
+
+        resized_char = resize(roi, (20, 20))
+        characters.append(resized_char)
+
+        column_list.append(x0)
+
+# character recognition
+
+chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K','L', 
+        'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+def read_training_data(training_directory):
+    image_data = []
+    target_data = []
+
+    for char in chars:
+        for x in range(10):
+            image_path = os.path.join(training_directory, char, char + '_' + str(x) + '.jpg')
+            img_details = imread(image_path, as_grey = True)
+            binary_image = threshold_otsu(img_details) > img_details
+
+            flat_binary_image = binary_image.reshape(-1)
+            image_data.append(flat_binary_image)
+            target_data.append(char)
+
+    return (np.array(image_data), np.array(target_data))
 
 
 plt.show()
