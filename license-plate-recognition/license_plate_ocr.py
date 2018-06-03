@@ -111,5 +111,31 @@ def read_training_data(training_directory):
 
     return (np.array(image_data), np.array(target_data))
 
+def cross_validation(mode, num_folds, train_data, train_label):
+    accuracy_result = cross_val_score(mode, train_data, train_label, cv = num_folds)
+
+    print('Cross validation result for ' + str(num_folds) + '-fold: ')
+
+    print(accuracy_result * 100)
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
+training_dataset_dir = os.path.join(current_dir, 'train20X20')
+
+image_data, target_data = read_training_data(training_dataset_dir)
+
+svc_model = SVC(kernel = 'linear', probability = True)
+
+cross_validation(svc_model, 4, image_data, target_data)
+
+svc_model.fit(image_data, target_data)
+
+# save the trained model so that re-training is unnecessary
+save_directory = os.path.join(current_dir, 'models/svc/')
+
+if not os.path.exists(save_directory):
+    os.makedirs(save_directory)
+
+joblib.dump(svc_model, save_directory + '/svc.pkl')
 
 plt.show()
