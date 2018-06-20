@@ -51,7 +51,7 @@ def load_data():
     train_set_y_orig = train_set_y_orig.reshape((1, train_set_y_orig.shape[0]))
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
 
-    return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig
+    return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
 
 def initialize_parameters(n_x, n_h, n_y):
     np.random.seed(1)
@@ -170,3 +170,111 @@ def update_parameters(parameters, grads, learning_rate):
 
     return parameters
 
+def predict(X, y, parameters):
+    m = X.shape[1]
+    n = len(parameters)
+    p = np.zeros((1, m))
+
+    probabilities, caches = L_model_forward(X, parameters)
+
+    for i in range(0, probabilities.shape[1]):
+        if probabilities[0, i] > 0.5:
+            p[0, i] = 1
+        else:
+            p[0, i] = 0
+
+    print('Accuracy: ' + str(np.sum((p == y)) / m))
+
+    return p
+
+def print_mislabeled_images(classes, X, y, p):
+    a = p + y
+    mislabeled_indices = np.asarray(np.where(a == 1))
+    plt.rcParams['figure.figsize'] = (40.0, 40.0)
+    num_images = len(mislabeled_indices[0])
+
+    for i in range(num_images):
+        index = mislabeled_indices[1][i]
+
+        plt.subplot(2, num_images, i + 1)
+        plt.imshow(X[:, index].reshape(64, 64, 3), interpolation = 'nearest')
+        plt.axis('off')
+        plt.title('Prediction: ' + classes[int(p[0, index])].decode('utf-8') + ' /n Class: ' + classes[y[0, index]].decode('utf-8'))
+
+####################################################
+#            END OF AUXILIARY FUNCTIONS            #
+####################################################
+
+# deep neural network application: image classification
+# start
+
+plt.rcParams['figure.figsize'] = (5.0, 4.0)
+plt.rcParams['image.interpolation'] = 'nearest'
+plt.rcParams['image.cmap'] = 'gray'
+
+np.random.seed(1)
+
+train_x_orig, train_y, test_x_orig, test_y, classes = load_data()
+
+# reshape training/test examples
+train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T
+test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
+
+# squeeze values between 0 and 1
+train_x = train_x_flatten / 255
+test_x = test_x_flatten / 255
+
+n_x = 12288
+n_h = 7
+n_y = 1
+layers_dims = (n_x, n_h, n_y)
+
+def two_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 3000, print_cost = False):
+    np.random.seed(1)
+    grads = {}
+    costs = []
+    m = X.shape[1]
+    (n_x, n_h, n_y) = layers_dims
+
+    parameters = initialize_parameters(n_x, n_h, n_y)
+
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+
+    for i in range(num_iterations):
+        A1, cache1 = linear_activation_forward(X, W1, b1, activation = 'relu')
+        A2, cache2 = linear_activation_forward(A1, W2, b2, activation = 'sigmoid')
+
+        cost = compute_cost(A2, Y)
+
+        dA2 = -(np.divide(Y, A2) - np.divide(1 - Y, 1 - A2))
+
+        # backprop
+        dA1, dW2, db2 = linear_activation_backward(dA2, cache2, activation = 'sigmoid')
+        dA0, dW1, db1 = linear_activation_backward(dA1, cache1, activation = 'relu')
+
+        grads['dW1'] = dW1
+        grads['db1'] = db1
+        grads['dW2'] = dW2
+        grads['db2'] = db2
+
+        parameters = update_parameters(parameters, grads, learning_rate)
+
+        W1 = parameters['W1']
+        b1 = parameters['b1']
+        W2 = parameters['W2']
+        b2 = parameters['b2']
+
+        if print_cost and i % 100 == 0:
+            print("Cost after iteration " + str(i) + ": " + str(np.squeeze(cost)))
+            costs.append(cost)
+
+    plt.plot(np.squeeze(costs))
+    plt.ylabel('cost')
+    plt.xlabel('iterations (per tens)')
+    plt.title('Learning Rate = ' + str(learning_rate))
+    plt.show()
+
+    return parameters
