@@ -278,3 +278,34 @@ def two_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 
     plt.show()
 
     return parameters
+
+def L_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 3000, print_cost = False):
+    np.random.seed(1)
+    costs = []
+
+    parameters = initialize_parameters_deep(layers_dims)
+
+    for i in range(num_iterations):
+        AL, caches = L_model_forward(X, parameters)
+
+        cost = compute_cost(AL, Y)
+
+        grads = L_model_backward(AL, Y, caches)
+
+        parameters = update_parameters(parameters, grads, learning_rate)
+
+        if print_cost and i % 100 == 0:
+            print("Cost after iteration " + str(i) + ": " + str(cost))
+            costs.append(cost)
+
+        plt.plot(np.squeeze(costs))
+        plt.ylabel('cost')
+        plt.xlabel('iterations (per tens)')
+        plt.title("Learning rate = " + str(learning_rate))
+        plt.show()
+
+        return parameters
+
+parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations = 2500, print_cost = True)
+
+pred_train = predict(train_x, train_y, parameters)
