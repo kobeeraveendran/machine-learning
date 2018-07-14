@@ -20,3 +20,9 @@ fashion_mnist = keras.datasets.fashion_mnist
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 
                'Dress', 'Coat', 'Sandal', 'Shirt', 
                'Sneaker', 'Bag', 'Ankle boot']
+
+# dataset exploration
+print("training shape: " + str(train_images.shape), 
+      "\ntraining labels: " + str(len(train_labels)), 
+      "\ntesting shape: " + str(test_images.shape), 
+      "\ntesting labels: " + str(len(test_labels)))
