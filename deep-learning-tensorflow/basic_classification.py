@@ -33,7 +33,7 @@ plt.colorbar()
 plt.gca().grid(False)
 #plt.show()
 
-# flatten images into range between 0 and 1
+# squeeze pixel value range from 0, 255 to 0, 1
 train_images = np.array(train_images) / 255.0
 test_images = np.array(test_images) / 255.0
 
@@ -46,3 +46,11 @@ for i in range(25):
     plt.xlabel(class_names[train_labels[i]])
 
 plt.show()
+
+# define the model
+# l1 - flatten from 28 x 28 to 784, 1
+# l2, l3 - fully connected layers; l3 contains output probabilities
+model = keras.Sequential([keras.layers.Flatten(input_shape = (28, 28)), 
+                          keras.layers.Dense(128, activation = tf.nn.relu), 
+                          keras.layers.Dense(10, activation = tf.nn.softmax)])
+
