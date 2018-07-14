@@ -57,3 +57,13 @@ model = keras.Sequential([keras.layers.Flatten(input_shape = (28, 28)),
 model.compile(optimizer = tf.train.AdamOptimizer(), 
               loss = 'sparse_categorical_crossentropy', 
               metrics = ['accuracy'])
+
+# training stage - reaches about 89.xx% on my machine
+model.fit(x = train_images, y = train_labels, epochs = 5)
+
+# accuracy validation
+test_loss, test_accuracy = model.evaluate(x = test_images, y = test_labels)
+
+# test accuracy - reaches about 87.xx% on my machine at the moment
+print('Test accuracy: ' + str(test_accuracy))
+
