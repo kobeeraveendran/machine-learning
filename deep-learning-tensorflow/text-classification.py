@@ -48,3 +48,25 @@ model.add(keras.layers.Dense(16, activation = tf.nn.relu))
 model.add(keras.layers.Dense(1, activation = tf.nn.sigmoid))
 
 print(model.summary())
+
+model.compile(optimizer = tf.train.AdamOptimizer(), 
+              loss = 'binary_crossentropy', 
+              metrics = ['accuracy'])
+
+# create validation set using 10000 elements
+x_val = train_data[:10000]
+partial_x_train = train_data[10000:]
+
+y_val = train_labels[:10000]
+partial_y_train = train_labels[10000:]
+
+# training:
+# 88% acc on 20 epochs, loss = 0.3664
+# 93% acc on 40 epochs, loss = 0.1936, val acc = 88%
+# 96% acc on 60 epochs, loss = 0.1224, val acc = 88% --> possible overfitting
+history = model.fit(x = partial_x_train, 
+                    y = partial_y_train, 
+                    epochs = 60, 
+                    batch_size = 512, 
+                    validation_data = (x_val, y_val))
+
