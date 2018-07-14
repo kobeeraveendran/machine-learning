@@ -67,3 +67,8 @@ test_loss, test_accuracy = model.evaluate(x = test_images, y = test_labels)
 # test accuracy - reaches about 87.xx% on my machine at the moment
 print('Test accuracy: ' + str(test_accuracy))
 
+predictions = model.predict(test_images)
+print("Prediction array: " + str(predictions[0]))
+
+print("Predicted class for image 0: " + class_names[np.argmax(predictions[0])])
+print("Actual class of image 0: " + class_names[test_labels[0]])
