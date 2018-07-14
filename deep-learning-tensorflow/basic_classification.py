@@ -45,7 +45,7 @@ for i in range(25):
     plt.imshow(train_images[i], cmap = 'Greys')
     plt.xlabel(class_names[train_labels[i]])
 
-plt.show()
+#plt.show()
 
 # define the model
 # l1 - flatten from 28 x 28 to 784, 1
@@ -72,3 +72,17 @@ print("Prediction array: " + str(predictions[0]))
 
 print("Predicted class for image 0: " + class_names[np.argmax(predictions[0])])
 print("Actual class of image 0: " + class_names[test_labels[0]])
+
+plt.figure(figsize = (10, 10))
+for i in range(25):
+    plt.subplot(5, 5, i + 1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid('off')
+    plt.imshow(test_images[i], cmap = 'Greys')
+    predicted_label = np.argmax(predictions[i])
+    true_label = test_labels[i]
+    color = 'green' if predicted_label == true_label else 'red'
+    plt.xlabel(class_names[predicted_label] + " (" + class_names[true_label] + ")", color = color)
+
+plt.show()
