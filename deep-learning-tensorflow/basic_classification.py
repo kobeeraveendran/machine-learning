@@ -86,3 +86,5 @@ for i in range(25):
     plt.xlabel(class_names[predicted_label] + " (" + class_names[true_label] + ")", color = color)
 
 plt.show()
+
+# TODO: add methods to pass in images not part of train/test set
