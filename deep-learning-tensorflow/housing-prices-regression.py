@@ -45,6 +45,9 @@ def build_model():
 model = build_model()
 model.summary()
 
+# stop training after periods of little improvement
+early_stop = keras.callbacks.EarlyStopping(patience = 20)
+
 class PrintDot(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs):
         if epoch % 100 == 0:
@@ -57,7 +60,7 @@ NUM_EPOCHS = 500
 history = model.fit(x = train_data, y = train_labels, 
                     epochs = NUM_EPOCHS, 
                     validation_split = 0.2, verbose = 0, 
-                    callbacks = [PrintDot()])
+                    callbacks = [early_stop, PrintDot()])
 
 # visualize training
 def plot_history(history):
@@ -75,3 +78,7 @@ def plot_history(history):
     plt.show()
 
 plot_history(history)
+
+[loss, mae] = model.evaluate(x = test_data, y = test_labels, verbose = 0)
+
+print("\nTesting set Mean Absolute Error: ${:7.2f}".format(mae * 1000))
