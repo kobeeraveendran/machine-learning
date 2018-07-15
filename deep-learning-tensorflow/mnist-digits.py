@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 import numpy as np
+from keras.utils import to_categorical
 
 mnist = keras.datasets.mnist
 (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
@@ -24,9 +25,15 @@ test_data = np.reshape(test_data, (10000, 784))
 train_data = train_data.astype('float32') / 255.0
 test_data = train_data.astype('float32') / 255.0
 
+# categorize labels
+train_labels = to_categorical(train_labels)
+test_labels = to_categorical(test_labels)
+
 # define model
 model = keras.models.Sequential()
 model.add(keras.layers.Dense(512, activation = 'relu', input_shape = (784, )))
 model.add(keras.layers.Dense(10, activation = 'softmax'))
 
 model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+
+model.fit(x = train_data, y = train_data, epochs = 10, batch_size = 128)
