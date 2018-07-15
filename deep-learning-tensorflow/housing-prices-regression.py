@@ -43,3 +43,17 @@ def build_model():
 
 model = build_model()
 model.summary()
+
+class PrintDot(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs):
+        if epoch % 100 == 0:
+            print('')
+        print('.', end = '')
+
+NUM_EPOCHS = 500
+
+history = model.fit(x = train_data, y = train_labels, 
+                    epochs = NUM_EPOCHS, 
+                    validation_split = 0.2, verbose = 0, 
+                    callbacks = [PrintDot()])
+
