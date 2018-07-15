@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 housing = keras.datasets.boston_housing
 
@@ -52,8 +53,25 @@ class PrintDot(keras.callbacks.Callback):
 
 NUM_EPOCHS = 500
 
+# train model, printing a '.' after each epoch
 history = model.fit(x = train_data, y = train_labels, 
                     epochs = NUM_EPOCHS, 
                     validation_split = 0.2, verbose = 0, 
                     callbacks = [PrintDot()])
 
+# visualize training
+def plot_history(history):
+    plt.figure()
+    plt.xlabel('Epoch')
+    plt.ylabel('Mean Absolute Error (in thousands of dollars)')
+    plt.plot(history.epoch, 
+             np.array(history.history['mean_absolute_error']), 
+             label = 'Training Loss')
+    plt.plot(history.epoch, 
+             np.array(history.history['val_mean_absolute_error']), 
+             label = 'Validation Loss')
+    plt.legend()
+    plt.ylim([0, 5])
+    plt.show()
+
+plot_history(history)
