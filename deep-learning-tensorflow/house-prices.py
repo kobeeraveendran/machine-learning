@@ -82,3 +82,7 @@ plot_history(history)
 [loss, mae] = model.evaluate(x = test_data, y = test_labels, verbose = 0)
 
 print("\nTesting set Mean Absolute Error: ${:7.2f}".format(mae * 1000))
+
+# make predictions
+test_predictions = model.predict(test_data).flatten()
+print(test_predictions)
