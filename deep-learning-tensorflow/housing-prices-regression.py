@@ -16,3 +16,16 @@ column_names = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX',
 
 df = pd.DataFrame(train_data, columns = column_names)
 print(df.head())
+
+print(train_labels[:10])
+
+# feature normalization
+mean = train_data.mean(axis = 0)
+std = train_data.std(axis = 0)
+train_data = (train_data - mean) / std
+test_data = (test_data - mean) / std
+
+# confirm with newly-normalized training/testing sample
+print(train_data[0])
+print(test_data[0])
+
