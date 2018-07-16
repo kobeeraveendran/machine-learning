@@ -2,7 +2,8 @@ import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 import numpy as np
-from keras.utils import to_categorical
+from keras import layers
+from keras import models
 
 mnist = keras.datasets.mnist
 (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
@@ -13,27 +14,21 @@ print("Training label shape: " + str(train_labels.shape))
 print("Testing data shape: " + str(test_data.shape))
 print("Testing label shape: " + str(test_labels.shape))
 
-plt.figure()
-plt.imshow(train_data[0])
-plt.show()
-
-# reshape and flatten for model compatibility
-train_data = np.reshape(train_data, (60000, 784))
-test_data = np.reshape(test_data, (10000, 784))
-
 # restrict pixel values
-train_data = train_data.astype('float32') / 255.0
-test_data = train_data.astype('float32') / 255.0
+train_data = train_data.astype('float32') / 255
+test_data = train_data.astype('float32') / 255
 
 # categorize labels
-train_labels = to_categorical(train_labels)
-test_labels = to_categorical(test_labels)
+train_labels = keras.utils.to_categorical(train_labels)
+test_labels = keras.utils.to_categorical(test_labels)
 
-# define model
-model = keras.models.Sequential()
-model.add(keras.layers.Dense(512, activation = 'relu', input_shape = (784, )))
-model.add(keras.layers.Dense(10, activation = 'softmax'))
+# define model, flatten input
+model = models.Sequential([
+    layers.Flatten(input_shape = (28, 28)), 
+    layers.Dense(512, activation = 'relu'), 
+    layers.Dense(10, activation = 'softmax')
+])
 
 model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
-model.fit(x = train_data, y = train_data, epochs = 10, batch_size = 128)
+model.fit(x = train_data, y = train_labels, epochs = 5, batch_size = 128)
