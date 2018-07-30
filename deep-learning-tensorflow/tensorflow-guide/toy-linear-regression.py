@@ -1,6 +1,8 @@
 import tensorflow as tf
 import random
 
+# adapted from Jacob Buckman's blog
+
 m = tf.get_variable('m', [], initializer = tf.constant_initializer(0.0))
 b = tf.get_variable('b', [], initializer = tf.constant_initializer(0.0))
 init = tf.global_variables_initializer()
@@ -36,3 +38,7 @@ with tf.Session() as sess:
     
     learned_params = sess.run([m, b])
     print('Learned params: m = {}, b = {}'.format(learned_params[0], learned_params[1]))
+
+# results:
+# true params: m = 0.050988..., b = 0.097086...
+# learned params: m = 0.050991..., b = 0.097084...
