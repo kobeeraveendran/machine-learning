@@ -54,3 +54,37 @@ def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, 
 
         return parameters
 
+def compute_cost_with_regularization(A3, Y, parameters, lambd):
+    m = Y.shape[1]
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+    W3 = parameters["W3"]
+
+    cross_entropy_cost = compute_cost(A3, Y)
+
+    L2_regularization_cost = (1.0 / m) * (lambd / 2) * np.sum([np.sum(np.square(i)) for i in [W1, W2, W3]])
+
+    cost = cross_entropy_cost + L2_regularization_cost
+
+    return cost
+
+
+parameters = model(train_X, train_Y)
+print("Training set: ")
+predictions_train = predict(train_X, train_Y, parameters)
+print("Testing set: ")
+predictions_test = predict(test_X, test_Y, parameters)
+
+plt.title("Model without regularization")
+axes = plt.gca()
+axes.set_xlim([-0.75, 0.40])
+axes.set_ylim([-0.75, 0.40])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
+
+##########################
+# WITH L2 REGULARIZATION #
+##########################
+
+A3, Y_assess, parameters = compute_cost_with_regularization_test_case()
+print("Cost = " + str(compute_cost_with_regularization(A3, Y_assess, parameters, lambd = 0.1)))
+
