@@ -16,28 +16,6 @@ def relu(x):
 
     return s
 
-def load_planar_dataset(seed):
-    np.random.seed(seed)
-
-    m = 400
-    N = int(m / 2)
-    D = 2
-    X = np.zeros((m, D))
-    Y = np.zeros((m, 1), dtype = 'uint8')
-    a = 4
-
-    for j in range(2):
-        ix = range(N * j, N * (j + 1))
-        t = np.linspace(j * 3.12, (j + 1) * 3.12, N) + np.random.randn(N) * 0.2
-        r = a * np.sin(4 * t) + np.random.randn(N) * 0.2
-        X[ix] = np.c_[r * np.sin(t), r * np.cos(t)]
-        Y[ix] = j
-
-    X = X.T
-    Y = Y.T
-
-    return X, Y
-
 def initialize_parameters(layer_dims):
 
     np.random.seed(3)
@@ -136,61 +114,11 @@ def compute_cost(a3, Y):
 
     return cost
 
-def load_dataset():
-    train_dataset = h5py.File('datasets/train_catvnoncat.h5', "r")
-    train_set_x_orig = np.array(train_dataset["train_set_x"][:])
-    train_set_y_orig = np.array(train_dataset["train_set_y"][:])
-
-    test_dataset = h5py.File('datasets/test_catvnoncat.h5', "r")
-    test_set_x_orig = np.array(test_dataset["test_set_x"][:])
-    test_set_y_orig = np.array(test_dataset["test_set_y"][:])
-
-    classes = np.array(test_dataset["list_classes"][:])
-    
-    train_set_y = train_set_y_orig.reshape((1, train_set_y_orig.shape[0]))
-    test_set_y = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
-    
-    train_set_x_orig = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
-    test_set_x_orig = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
-    
-    train_set_x = train_set_x_orig / 255
-    test_set_x = test_set_x_orig / 255
-
-    return train_set_x, train_set_y, test_set_x, test_set_y, classes
-
 def predict_dec(parameters, X):
     a3, _ = forward_propagation(X, parameters)
     predictions = (a3 > 0.5)
 
     return predictions
-
-def load_dataset_v2(randomness, seed):
-    np.random.seed(seed)
-    
-    m = 50
-    N = int(m / 2)
-    D = 2
-    X = np.zeros((m,D))
-    Y = np.zeros((m,1), dtype='uint8')
-    a = 2
-
-    for j in range(2):
-        
-        ix = range(N * j,N * (j + 1))
-        if j == 0:
-            t = np.linspace(j, 4 * 3.1415 * (j + 1),N) #+ np.random.randn(N)*randomness # theta
-            r = 0.3 * np.square(t) + np.random.randn(N) * randomness # radius
-        if j == 1:
-            t = np.linspace(j, 2 * 3.1415 * (j + 1), N) #+ np.random.randn(N)*randomness # theta
-            r = 0.2 * np.square(t) + np.random.randn(N) * randomness # radius
-            
-        X[ix] = np.c_[r * np.cos(t), r * np.sin(t)]
-        Y[ix] = j
-        
-    X = X.T
-    Y = Y.T
-
-    return X, Y
 
 def plot_decision_boundary(model, X, y):
     x_min, x_max = X[0, :].min() - 1, X[0, :].max() + 1
