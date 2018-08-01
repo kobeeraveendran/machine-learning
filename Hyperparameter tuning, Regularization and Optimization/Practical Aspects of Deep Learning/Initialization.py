@@ -70,6 +70,16 @@ def initialize_parameters_random(layers_dims):
 
     return parameters
 
+def initialize_parameters_he(layers_dims):
+    np.random.seed(3)
+    parameters = {}
+    L = len(layers_dims)
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l - 1]) * np.sqrt(2 / (layers_dims[l - 1]))
+        parameters['b' + str(l)] = np.zeros(shape = (layers_dims[l], 1))
+
+    return parameters
 
 ########################
 # ZEROS INITIALIZATION #
@@ -119,6 +129,23 @@ print('predictions_train = ' + str(predictions_train))
 print('predictions_test = ' + str(predictions_test))
 
 plt.title('Model with large random initialization')
+axes = plt.gca()
+axes.set_xlim([-1.5, 1.5])
+axes.set_ylim([-1.5, 1.5])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
+
+#####################
+# HE INITIALIZATION #
+#####################
+
+parameters = model(train_X, train_Y, initialization = 'he')
+print("Training set: ")
+predictions_train = predict(train_X, train_Y, parameters)
+print("Testing set: ")
+predictions_test = predict(test_X, test_Y, parameters)
+
+# plot decision boundary
+plt.title('Model with He initialization')
 axes = plt.gca()
 axes.set_xlim([-1.5, 1.5])
 axes.set_ylim([-1.5, 1.5])
