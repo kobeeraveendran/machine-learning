@@ -68,7 +68,7 @@ def update_parameters(parameters, grads, learning_rate):
 
 def compute_loss(a3, Y):
     m = Y.shape[1]
-    logprobs = np.multiply(-np.log(a3), Y) + np.mulitply(-np.log(1 - a3), 1 - Y)
+    logprobs = np.multiply(-np.log(a3), Y) + np.multiply(-np.log(1 - a3), 1 - Y)
     loss = 1.0 / m * np.nansum(logprobs)
 
     return loss
@@ -133,7 +133,7 @@ def predict_dec(parameters, X):
 
     return predictions
 
-def load_dataest():
+def load_dataset():
     np.random.seed(1)
     train_X, train_Y = sklearn.datasets.make_circles(n_samples = 300, noise = 0.05)
     np.random.seed(2)
@@ -146,4 +146,3 @@ def load_dataest():
     test_Y = test_Y.reshape((1, test_Y.shape[0]))
 
     return train_X, train_Y, test_X, test_Y
-    
