@@ -104,12 +104,13 @@ print("predictions_test = " + str(predictions_test))
 
 # neurons all predict 0 (they each learn the same weights)
 # avoid by initializing weights randomly (biases may be initialized to zero though)
+'''
 plt.title('Model with zeros initialization')
 axes = plt.gca()
 axes.set_xlim([-1.5, 1.5])
 axes.set_ylim([-1.5, 1.5])
 plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
-
+'''
 #########################
 # RANDOM INITIALIZATION #
 #########################
@@ -128,12 +129,13 @@ predictions_test = predict(test_X, test_Y, parameters)
 print('predictions_train = ' + str(predictions_train))
 print('predictions_test = ' + str(predictions_test))
 
+'''
 plt.title('Model with large random initialization')
 axes = plt.gca()
 axes.set_xlim([-1.5, 1.5])
 axes.set_ylim([-1.5, 1.5])
 plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
-
+'''
 #####################
 # HE INITIALIZATION #
 #####################
@@ -144,9 +146,14 @@ predictions_train = predict(train_X, train_Y, parameters)
 print("Testing set: ")
 predictions_test = predict(test_X, test_Y, parameters)
 
+print('predictions_train: ' + str(predictions_train))
+print('predictions_test: ' + str(predictions_test))
+
 # plot decision boundary
+'''
 plt.title('Model with He initialization')
 axes = plt.gca()
 axes.set_xlim([-1.5, 1.5])
 axes.set_ylim([-1.5, 1.5])
 plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
+'''
