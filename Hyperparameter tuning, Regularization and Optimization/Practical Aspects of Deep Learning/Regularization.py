@@ -68,6 +68,32 @@ def compute_cost_with_regularization(A3, Y, parameters, lambd):
 
     return cost
 
+def backward_propagation_with_regularization(X, Y, cache, lambd):
+
+    m = X.shape[1]
+    (Z1, A1, W1, b1, Z2, A2, W2, b2, Z3, A3, W3, b3) = cache
+
+    dZ3 = A3 - Y
+
+    dW3 = (1.0 / m) * np.dot(dZ3, A2.T) + (lambd / m) * W3
+    db3 = (1.0 / m) * np.sum(dZ3, axis = 1, keepdims = True)
+
+    dA2 = np.dot(W3.T, dZ3)
+    dZ2 = np.multiply(dA2, np.int64(A2 > 0))
+    dW2 = (1.0 / m) * np.dot(dZ2, A1.T) + (lambd / m) * W2
+    db2 = (1.0 / m) * np.sum(dZ2, axis = 1, keepdims = True)
+
+    dA1 = np.dot(W2.T, dZ2)
+    dZ1 = np.multiply(dA1, np.int64(A1 > 0))
+    dW1 = (1.0 / m) * np.dot(dZ1, X.T) + (lambd / m) * W1
+    db1 = (1.0 / m) * np.sum(dZ1, axis = 1, keepdims = True)
+
+    gradients = {"dZ3": dZ3, "dW3": dW3, "db3": db3,"dA2": dA2,
+                 "dZ2": dZ2, "dW2": dW2, "db2": db2, "dA1": dA1, 
+                 "dZ1": dZ1, "dW1": dW1, "db1": db1}
+
+    return gradients
+
 
 parameters = model(train_X, train_Y)
 print("Training set: ")
@@ -85,6 +111,27 @@ plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
 # WITH L2 REGULARIZATION #
 ##########################
 
+# forward propagation check
+
 A3, Y_assess, parameters = compute_cost_with_regularization_test_case()
 print("Cost = " + str(compute_cost_with_regularization(A3, Y_assess, parameters, lambd = 0.1)))
 
+# backward propagation check
+
+X_assess, Y_assess, cache = backward_propagation_with_regularization_test_case()
+grads = backward_propagation_with_regularization(X_assess, Y_assess, cache, lambd = 0.7)
+print("dW1 = " + str(grads['dW1']))
+print("dW2 = " + str(grads['dW2']))
+print("dW3 = " + str(grads['dW3']))
+
+parameters = model(train_X, train_Y, lambd = 0.7)
+print("Training set: ")
+predictions_train = predict(train_X, train_Y, parameters)
+print("Testing set: ")
+predictions_test = predict(test_X, test_Y, parameters)
+
+plt.title("Model with L2-regularization")
+axes = plt.gca()
+axes.set_xlim([-0.75, 0.40])
+axes.set_ylim([-0.75, 0.40])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
