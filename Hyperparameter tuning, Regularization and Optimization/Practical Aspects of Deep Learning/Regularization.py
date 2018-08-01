@@ -219,3 +219,8 @@ predictions_train = predict(train_X, train_Y, parameters)
 print("Testing set: ")
 predictions_test = predict(test_X, test_Y, parameters)
 
+plt.title("Model with dropout")
+axes = plt.gca()
+axes.set_xlim([-0.75, 0.40])
+axes.set_ylim([-0.75, 0.40])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
