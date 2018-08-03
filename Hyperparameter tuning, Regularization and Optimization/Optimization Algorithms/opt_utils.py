@@ -105,7 +105,13 @@ def predict(X, y, parameters):
         else:
             predictions[0, i] = 0
 
-    print("Accuracy = " + str(np.mean((p[0, :] == y[0, :]))))
+    print("Accuracy = " + str(np.mean((predictions[0, :] == y[0, :]))))
+
+    return predictions
+
+def predict_dec(parameters, X):
+    a3, cache = forward_propagation(X, parameters)
+    predictions = (a3 > 0.5)
 
     return predictions
 
