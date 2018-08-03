@@ -76,6 +76,20 @@ def update_parameters_with_momentum(parameters, grads, v, beta, learning_rate):
 
     return parameters, v
 
+def initialize_adam(parameters):
+
+    L = len(parameters) // 2
+    v = {}
+    s = {}
+
+    for l in range(L):
+        v['dW' + str(l + 1)] = np.zeros(shape = parameters['W' + str(l + 1)].shape)
+        v['db' + str(l + 1)] = np.zeros(shape = parameters['b' + str(l + 1)].shape)
+        s['dW' + str(l + 1)] = np.zeros(shape = parameters['W' + str(l + 1)].shape)
+        s['db' + str(l + 1)] = np.zeros(shape = parameters['b' + str(l + 1)].shape)
+
+    return v, s
+
 # check with GD
 parameters, grads, learning_rate = update_parameters_with_gd_test_case()
 
@@ -119,3 +133,16 @@ print("v[\"dW1\"] = " + str(v["dW1"]))
 print("v[\"db1\"] = " + str(v["db1"]))
 print("v[\"dW2\"] = " + str(v["dW2"]))
 print("v[\"db2\"] = " + str(v["db2"]))
+
+# Adam optimizer initialization check
+parameters = initialize_adam_test_case()
+v, s = initialize_adam(parameters)
+print("v[\"dW1\"] = " + str(v["dW1"]))
+print("v[\"db1\"] = " + str(v["db1"]))
+print("v[\"dW2\"] = " + str(v["dW2"]))
+print("v[\"db2\"] = " + str(v["db2"]))
+print("s[\"dW1\"] = " + str(s["dW1"]))
+print("s[\"db1\"] = " + str(s["db1"]))
+print("s[\"dW2\"] = " + str(s["dW2"]))
+print("s[\"db2\"] = " + str(s["db2"]))
+
