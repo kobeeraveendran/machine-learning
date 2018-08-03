@@ -52,6 +52,19 @@ def random_mini_batches(X, Y, mini_batch_size = 64, seed = 0):
 
     return mini_batches
 
+def initialize_velocity(parameters):
+
+    L = len(parameters)
+    v = {}
+
+    for l in range(L):
+        v['dW' + str(l + 1)] = np.zeros(shape = (parameters['W' + str(l + 1)].shape))
+        v['db' + str(l + 1)] = np.zeros(shape = (parameters['b' + str(l + 1)].shape))
+
+    return v
+
+    
+
 # check with GD
 parameters, grads, learning_rate = update_parameters_with_gd_test_case()
 
@@ -73,3 +86,12 @@ print("shape of the first mini_batch_Y: " + str(mini_batches[0][1].shape))
 print("shape of the second mini_batch_Y: " + str(mini_batches[0][2].shape))
 print("shape of the third mini_batch_Y: " + str(mini_batches[0][3]))
 print("mini batch sanity check: " + str(mini_batches[0][0][0][0 : 3]))
+
+# check velocity initializations
+parameters = initialize_velocity_test_case()
+v = initialize_velocity(parameters)
+
+print("v[\"dW1\"] = " + str(v["dW1"]))
+print("v[\"db1\"] = " + str(v["db1"]))
+print("v[\"dW2\"] = " + str(v["dW2"]))
+print("v[\"db2\"] = " + str(v["db2"]))
