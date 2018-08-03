@@ -254,3 +254,13 @@ axes.set_xlim([-1.5, 2.5])
 axes.set_ylim([-1.5, 1.5])
 plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
 
+# momentum optimizer
+parameters = model(train_X, train_Y, layers_dims, beta = 0.9, optimizer = 'momentum')
+
+predictions = predict(train_X, train_Y, parameters)
+
+plt.title('Model with Momentum Optimization')
+axes = plt.gca()
+axes.set_xlim([-1.5, 2.5])
+axes.set_ylim([-1.5, 2.5])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
