@@ -114,6 +114,60 @@ def update_parameters_with_adam(parameters, grads, v, s, t, learning_rate = 0.01
 
         return parameters, v, s
 
+def model(X, Y, layers_dims, optimizer, learning_rate = 0.0007, mini_batch_size = 64, beta = 0.9, beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8, num_epochs = 10000, print_cost = True):
+
+    L = len(layers_dims)
+    costs = []
+    t = 0
+    seed = 10
+
+    parameters = initialize_parameters(layers_dims)
+
+    if optimizer == 'gd':
+        pass
+    elif optimizer == 'momentum':
+        v = initialize_velocity(parameters)
+    elif optimizer == 'adam':
+        v, s = initialize_adam(parameters)
+
+    for i in range(num_epochs):
+
+        seed += 1
+        minibatches = random_mini_batches(X, Y, mini_batch_size, seed)
+
+        for minibatch in minibatches:
+            (minibatch_X, minibatch_Y) = minibatch
+
+            a3, caches = forward_propagation(minibatch_X, parameters)
+
+            cost = compute_cost(a3, Y)
+
+            grads = backward_propagation(X, Y, cache)
+
+            if optimizer == 'gd':
+                parameters = update_parameters_with_gd(parameters, grads, learning_rate)
+
+            elif optimizer == 'momentum':
+                parameters = update_parameters_with_momentum(parameters, grads, v, beta, learning_rate)
+
+            elif optimizer == 'adam':
+                t += 1
+                parameters, v, s = update_parameters_with_adam(parameters, grads, v, s, t, learning_rate, beta1, beta2, epsilon)
+
+        if print_cost and i % 1000 == 0:
+            print('Cost after epoch {}: {}'.format(i, cost))
+
+        if print_cost and i % 100 == 0:
+            costs.append(cost)
+
+    plt.plot(costs)
+    plt.ylabel('cost')
+    plt.xlabel('epochs (in hundreds)')
+    plt.title('Learning rate = ' + str(learning_rate))
+    plt.show()
+
+    return parameters
+
 # check with GD
 parameters, grads, learning_rate = update_parameters_with_gd_test_case()
 
@@ -185,3 +239,6 @@ print("s[\"dW1\"] = " + str(s["dW1"]))
 print("s[\"db1\"] = " + str(s["db1"]))
 print("s[\"dW2\"] = " + str(s["dW2"]))
 print("s[\"db2\"] = " + str(s["db2"]))
+
+train_X, train_Y = load_dataset()
+
