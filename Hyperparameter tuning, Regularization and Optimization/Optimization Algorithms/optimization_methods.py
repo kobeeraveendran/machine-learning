@@ -242,3 +242,15 @@ print("s[\"db2\"] = " + str(s["db2"]))
 
 train_X, train_Y = load_dataset()
 
+# batch gradient descent
+layers_dims = [train_X.shape[0], 5, 2, 1]
+parameters = model(train_X, train_Y, layers_dims, optimizer = 'gd')
+
+predictions = predict(train_X, train_Y, parameters)
+
+plt.title('Model with Gradient Descent Optimization')
+axes = plt.gca()
+axes.set_xlim([-1.5, 2.5])
+axes.set_ylim([-1.5, 1.5])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
+
