@@ -3,8 +3,6 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from tensorflow.python.framework import ops
-from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict
 
 np.random.seed(1)
 
@@ -78,7 +76,7 @@ def cost(logits, labels):
 
 def one_hot_matrix(labels, C):
 
-    C = tf.constant(C, dtype = tf.int64, name = 'C')
+    C = tf.constant(C, dtype = tf.int32, name = 'C')
 
     one_hot_matrix = tf.one_hot(indices = labels, depth = C, axis = 0)
 
@@ -89,6 +87,18 @@ def one_hot_matrix(labels, C):
     sess.close()
 
     return one_hot
+
+def ones(shape):
+
+    ones = tf.ones(shape = shape, dtype = tf.int32)
+
+    sess = tf.Session()
+
+    ones = sess.run(ones)
+    
+    sess.close()
+
+    return ones
 
 # sigmoid check
 print('sigmoid(0) = ' + str(sigmoid(0)))
@@ -104,3 +114,5 @@ labels = np.array([1, 2, 3, 0, 2, 1])
 one_hot = one_hot_matrix(labels, C = 4)
 print('one-hot = ' + str(one_hot))
 
+# checking ones initialization
+print('ones = ' + str(ones([3])))
