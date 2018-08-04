@@ -61,4 +61,27 @@ def sigmoid(z):
 
     return result
 
-    
+def cost(logits, labels):
+
+    z = tf.placeholder(dtype = tf.float32, name = 'z')
+    y = tf.placeholder(dtype = tf.float32, name = 'y')
+
+    cost = tf.nn.sigmoid_cross_entropy_with_logits(logits = z, labels = y)
+
+    sess = tf.Session()
+
+    cost = sess.run(cost, feed_dict = {z: logits, y: labels})
+
+    sess.close()
+
+    return cost
+
+
+# sigmoid check
+print('sigmoid(0) = ' + str(sigmoid(0)))
+print('sigmoid(12) = ' + str(sigmoid(12)))
+
+# cost function check
+logits = sigmoid(np.array([0.2, 0.4, 0.7, 0.9]))
+cost = cost(logits, np.array([0, 0, 1, 1]))
+print('cost = ' + str(cost))
