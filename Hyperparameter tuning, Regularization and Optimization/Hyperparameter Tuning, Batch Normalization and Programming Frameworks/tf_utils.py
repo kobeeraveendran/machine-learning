@@ -14,8 +14,8 @@ def load_dataset():
 
     classes = np.array(test_dataset['list_classes'][:])
 
-    train_set_y_orig = train_set_y_orig.reshape(shape = (1, train_set_y_orig.shape[0]))
-    test_set_y_orig = test_set_y_orig.reshape(shape = (1, tesT_set_y_orig.shape[0]))
+    train_set_y_orig = train_set_y_orig.reshape((1, train_set_y_orig.shape[0]))
+    test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
 
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
 
@@ -27,7 +27,7 @@ def random_mini_batches(X, Y, mini_batch_size = 64, seed = 0):
 
     permutation = list(np.random.permutation(m))
     shuffled_X = X[:, permutation]
-    shuffled_Y = Y[:, permutation].reshape(shape = (Y.shape[0], m))
+    shuffled_Y = Y[:, permutation].reshape((Y.shape[0], m))
 
     num_complete_minibatches = math.floor(m / mini_batch_size)
 
