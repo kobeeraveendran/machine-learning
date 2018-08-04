@@ -48,10 +48,10 @@ def initialize_parameters():
 
     W1 = tf.get_variable(name = "W1", shape = (25, 12288), initializer = tf.contrib.layers.xavier_initializer(seed = 1))
     b1 = tf.get_variable(name = "b1", shape = (25, 1), initializer = tf.zeros_initializer())
-    W2 = tf.get_variable(name = "W2", shape = (25, 12288), initializer = tf.contrib.layers.xavier_initializer(seed = 1))
-    b2 = tf.get_variable(name = "b2", shape = (25, 1), initializer = tf.zeros_initializer())
-    W3 = tf.get_variable(name = "W3", shape = (25, 12288), initializer = tf.contrib.layers.xavier_initializer(seed = 1))
-    b3 = tf.get_variable(name = "b3", shape = (25, 1), initializer = tf.zeros_initializer())
+    W2 = tf.get_variable(name = "W2", shape = (12, 25), initializer = tf.contrib.layers.xavier_initializer(seed = 1))
+    b2 = tf.get_variable(name = "b2", shape = (12, 1), initializer = tf.zeros_initializer())
+    W3 = tf.get_variable(name = "W3", shape = (6, 12), initializer = tf.contrib.layers.xavier_initializer(seed = 1))
+    b3 = tf.get_variable(name = "b3", shape = (6, 1), initializer = tf.zeros_initializer())
 
     parameters = {
         "W1": W1,
@@ -71,3 +71,21 @@ with tf.Session() as sess:
     print("b1 = " + str(parameters["b1"]))
     print("W2 = " + str(parameters["W2"]))
     print("b2 = " + str(parameters["b2"]))
+
+def forward_propagation(X, parameters):
+
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    W3 = parameters['W3']
+    b3 = parameters['b3']
+
+    Z1 = tf.add(tf.matmul(W1, X), b1)
+    A1 = tf.nn.relu(Z1)
+    Z2 = tf.add(tf.matmul(W2, A1), b2)
+    A2 = tf.nn.relu(Z2)
+    Z3 = tf.add(tf.matmul(W3, A2), b3)
+    
+    return Z3
+
