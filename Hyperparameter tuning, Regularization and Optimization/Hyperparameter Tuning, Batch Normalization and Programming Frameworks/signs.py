@@ -37,3 +37,9 @@ print('Y_train shape: ' + str(Y_train.shape))
 print('X_test shape: ' + str(X_test.shape))
 print('Y_test shape: ' + str(Y_test.shape))
 
+def create_placeholders(n_x, n_y):
+    X = tf.placeholder(dtype = 'float', shape = (n_x, None))
+    Y = tf.placeholder(dtype = 'float', shape = (n_y, None))
+
+    return X, Y
+
