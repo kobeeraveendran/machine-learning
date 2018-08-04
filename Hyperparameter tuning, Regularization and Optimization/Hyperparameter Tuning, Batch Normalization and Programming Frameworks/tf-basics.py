@@ -76,6 +76,19 @@ def cost(logits, labels):
 
     return cost
 
+def one_hot_matrix(labels, C):
+
+    C = tf.constant(C, dtype = tf.int64, name = 'C')
+
+    one_hot_matrix = tf.one_hot(indices = labels, depth = C, axis = 0)
+
+    sess = tf.Session()
+
+    one_hot = sess.run(one_hot_matrix)
+
+    sess.close()
+
+    return one_hot
 
 # sigmoid check
 print('sigmoid(0) = ' + str(sigmoid(0)))
@@ -85,3 +98,9 @@ print('sigmoid(12) = ' + str(sigmoid(12)))
 logits = sigmoid(np.array([0.2, 0.4, 0.7, 0.9]))
 cost = cost(logits, np.array([0, 0, 1, 1]))
 print('cost = ' + str(cost))
+
+# check one-hot matrix conversion
+labels = np.array([1, 2, 3, 0, 2, 1])
+one_hot = one_hot_matrix(labels, C = 4)
+print('one-hot = ' + str(one_hot))
+
