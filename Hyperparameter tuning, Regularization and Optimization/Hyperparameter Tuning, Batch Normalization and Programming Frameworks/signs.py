@@ -7,6 +7,11 @@ import tensorflow as tf
 from tensorflow.python.framework import ops
 from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict
 
+# for testing on custom image
+import scipy
+from PIL import Image
+from scipy import ndimage
+
 # for benchmarking
 import time
 
@@ -194,3 +199,14 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
 
 # train model
 parameters = model(X_train, Y_train, X_test, Y_test)
+
+# testing on custom image
+custom_image = 'ok.jpg'
+
+filename = 'images/' + custom_image
+image = np.array(ndimage.imread(filename, flatten = False))
+custom_image = scipy.misc.imresize(image, size = (64, 64)).reshape((1, 64 * 64 * 3)).T
+custom_image_prediction = predict(custom_image, parameters)
+
+plt.imshow(image)
+print('Predicted value: y = ' + str(np.squeeze(custom_image_prediction)))
