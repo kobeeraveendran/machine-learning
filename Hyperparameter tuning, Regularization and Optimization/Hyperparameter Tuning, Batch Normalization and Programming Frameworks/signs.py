@@ -7,6 +7,13 @@ import tensorflow as tf
 from tensorflow.python.framework import ops
 from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict
 
+# for benchmarking
+import time
+
+# removing tensorflow debugging output in console
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 np.random.seed(1)
 
 # load dataset
@@ -42,6 +49,10 @@ def create_placeholders(n_x, n_y):
     Y = tf.placeholder(dtype = 'float', shape = (n_y, None))
 
     return X, Y
+
+X, Y = create_placeholders(12288, 6)
+print('X = ' + str(X))
+print('Y = ' + str(Y))
 
 def initialize_parameters():
     tf.set_random_seed(1)
@@ -100,7 +111,7 @@ def compute_cost(Z3, Y):
     logits = tf.transpose(Z3)
     labels = tf.transpose(Y)
 
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels))
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = logits, labels = labels))
 
     return cost
 
@@ -123,7 +134,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
     n_y = Y_train.shape[0]
     costs = []
 
-    X, Y = create_placeholders(n_x, n_y)
+    X, Y = create_placeholders(12288, 6)
 
     parameters = initialize_parameters()
 
@@ -134,6 +145,8 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
     optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(cost)
 
     init = tf.global_variables_initializer()
+
+    
 
     with tf.Session() as sess:
         sess.run(init)
@@ -157,6 +170,10 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
             if print_cost and epoch % 5 == 0:
                 costs.append(epoch_cost)
 
+        end_time = time.time()
+
+        
+
         plt.plot(np.squeeze(costs))
         plt.ylabel('cost')
         plt.xlabel('iterations (in tens)')
@@ -173,4 +190,11 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
         print("Train accuracy: " + str(accuracy.eval({X: X_train, Y: Y_train})))
         print("Test accuracy: " + str(accuracy.eval({X: X_test, Y: Y_test})))
 
-        return parameters
+    return parameters
+
+# train model, measure training time
+start_time = time.time()
+parameters = model(X_train, Y_train, X_test, Y_test)
+end_time = time.time()
+
+print('Training duration in seconds: ' + str(end_time - start_time))

@@ -41,7 +41,7 @@ def random_mini_batches(X, Y, mini_batch_size = 64, seed = 0):
 
     if remainder != 0:
         mini_batch_X = shuffled_X[:, m - remainder : m]
-        mini_batch_X = shuffled_Y[:, m - remainder : m]
+        mini_batch_Y = shuffled_Y[:, m - remainder : m]
 
         mini_batches.append((mini_batch_X, mini_batch_Y))
 
