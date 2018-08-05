@@ -146,7 +146,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
 
     init = tf.global_variables_initializer()
 
-    
+    start_time = time.time()
 
     with tf.Session() as sess:
         sess.run(init)
@@ -172,7 +172,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
 
         end_time = time.time()
 
-        
+        print('Training duration in seconds: ' + str(end_time - start_time))        
 
         plt.plot(np.squeeze(costs))
         plt.ylabel('cost')
@@ -192,9 +192,5 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
 
     return parameters
 
-# train model, measure training time
-start_time = time.time()
+# train model
 parameters = model(X_train, Y_train, X_test, Y_test)
-end_time = time.time()
-
-print('Training duration in seconds: ' + str(end_time - start_time))
