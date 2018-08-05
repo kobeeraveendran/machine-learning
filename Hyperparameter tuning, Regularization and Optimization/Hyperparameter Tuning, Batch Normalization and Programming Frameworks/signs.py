@@ -113,3 +113,48 @@ with tf.Session() as sess:
     cost = compute_cost(Z3, Y)
 
     print('cost = ' + str(cost))
+
+def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs = 1500, minibatch_size = 32, print_cost = True):
+
+    ops.reset_default_graph()
+    tf.set_random_seed(1)
+    seed = 3
+    (n_x, m) = X_train.shape
+    n_y = Y_train.shape[0]
+    costs = []
+
+    X, Y = create_placeholders(12288, 6)
+
+    parameters = initialize_parameters()
+
+    Z3 = forward_propagation(X, parameters)
+
+    cost = compute_cost(Z3, Y)
+
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(cost)
+
+    init = tf.global_variables_initializer()
+
+    with tf.Session() as sess:
+        sess.run(init)
+
+        for epoch in range(num_epochs):
+
+            epoch_cost = 0.0
+            num_minibatches = int(m / minibatch_size)
+            seed += 1
+            minibatches = random_mini_batches(X_train, Y_train, minibatch_size, seed)
+
+            for minibatch in minibatches:
+                (minibatch_X, minibatch_Y) = minibatch
+
+                _, minibatch_cost = sess.run([optimizer, cost], feed_dict = {X: minibatch_X, Y: minibatch_Y})
+
+                epoch_cost += minibatch_cost / num_minibatches
+
+            if print_cost and epoch % 100 == 0:
+                print('Cost after epoch {}: {}'.format(epoch, epoch_cost))
+            if print_cost and epoch % 5 == 0:
+                costs.append(epoch_cost)
+
+        
