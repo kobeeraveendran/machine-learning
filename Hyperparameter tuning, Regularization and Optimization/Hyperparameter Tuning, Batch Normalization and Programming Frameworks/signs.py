@@ -123,7 +123,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
     n_y = Y_train.shape[0]
     costs = []
 
-    X, Y = create_placeholders(12288, 6)
+    X, Y = create_placeholders(n_x, n_y)
 
     parameters = initialize_parameters()
 
@@ -131,7 +131,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
 
     cost = compute_cost(Z3, Y)
 
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(cost)
 
     init = tf.global_variables_initializer()
 
@@ -157,4 +157,20 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001, num_epochs =
             if print_cost and epoch % 5 == 0:
                 costs.append(epoch_cost)
 
-        
+        plt.plot(np.squeeze(costs))
+        plt.ylabel('cost')
+        plt.xlabel('iterations (in tens)')
+        plt.title('Learning rate = ' + str(learning_rate))
+        plt.show()
+
+        parameters = sess.run(parameters)
+        print('Parameters trained.')
+
+        correct_prediction = tf.equal(tf.argmax(Z3), tf.argmax(Y))
+
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
+
+        print("Train accuracy: " + str(accuracy.eval({X: X_train, Y: Y_train})))
+        print("Test accuracy: " + str(accuracy.eval({X: X_test, Y: Y_test})))
+
+        return parameters
