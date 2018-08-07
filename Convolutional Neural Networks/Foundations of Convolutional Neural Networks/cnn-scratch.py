@@ -229,3 +229,5 @@ def distribute_value(dz, shape):
     
     return a
 
+a = distribute_value(2, (2, 2))
+print('distributed value = ' + str(a))
