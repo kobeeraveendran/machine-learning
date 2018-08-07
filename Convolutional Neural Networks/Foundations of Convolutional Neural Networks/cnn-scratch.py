@@ -148,6 +148,8 @@ print('mode = average')
 print('A = ' + str(A))
 print('\n')
 
+
+# backpropagation on convolutional layers
 def conv_backward(dZ, cache):
 
     (A_prev, W, b, hyperparameters) = cache
@@ -193,8 +195,24 @@ def conv_backward(dZ, cache):
 
     return dA_prev, dW, db
 
+# check conv_backward
 np.random.seed(1)
 dA, dW, db = conv_backward(Z, cache_conv)
 print('dA mean = ' + str(np.mean(dA)))
 print('dW mean = ' + str(np.mean(dW)))
 print('db mean = ' + str(np.mean(db)))
+
+# backpropagation on pooling layers
+# (to propagate gradients to previous layers)
+def create_mask_from_window(x):
+
+    mask = (x == np.max(x))
+
+    return mask
+
+# check masking function
+np.random.seed(1)
+x = np.random.randn(2, 3)
+mask = create_mask_from_window(x)
+print('x = ' + str(x))
+print('mask = ' + str(mask))
