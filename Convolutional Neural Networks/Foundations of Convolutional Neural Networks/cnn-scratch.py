@@ -181,7 +181,7 @@ def conv_backward(dZ, cache):
                     horiz_start = w * stride
                     horiz_end = horiz_start + f
 
-                    a_slice = A_prev[vert_start: vert_end, horiz_start: horiz_end, :]
+                    a_slice = a_prev_pad[vert_start: vert_end, horiz_start: horiz_end, :]
 
                     da_prev_pad[vert_start: vert_end, horiz_start: horiz_end, :] += W[..., c] * dZ[i, h, w, c]
                     dW[..., c] += a_slice * dZ[i, h, w, c]
@@ -192,3 +192,9 @@ def conv_backward(dZ, cache):
     assert(dA_prev.shape == (m, n_H_prev, n_W_prev, n_C_prev))
 
     return dA_prev, dW, db
+
+np.random.seed(1)
+dA, dW, db = conv_backward(Z, cache_conv)
+print('dA mean = ' + str(np.mean(dA)))
+print('dW mean = ' + str(np.mean(dW)))
+print('db mean = ' + str(np.mean(db)))
