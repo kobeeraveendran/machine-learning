@@ -273,3 +273,21 @@ def pool_backward(dA, cache, mode = 'max'):
 
     return dA_prev
 
+# check pooling backprop
+np.random.seed(1)
+A_prev = np.random.randn(5, 5, 3, 2)
+hyperparameters = {'stride': 1, 'f': 2}
+A, cache = pool_forward(A_prev, hyperparameters)
+dA = np.random.randn(5, 4, 2, 2)
+
+dA_prev = pool_backward(dA, cache, mode = 'max')
+print('mode = max')
+print('mean of dA = ' + str(np.mean(dA)))
+print('dA_prev[1, 1] = ' + str(dA_prev[1, 1]))
+print('\n')
+
+dA_prev = pool_backward(dA, cache, mode = 'average')
+print('mode = average')
+print('mean of dA = ' + str(np.mean(dA)))
+print('dA_prev[1, 1] = ' + str(dA_prev[1, 1]))
+print('\n')
