@@ -31,3 +31,17 @@ axarr[1].set_title('x_pad')
 axarr[1].imshow(x_pad[0, :, :, 0])
 plt.show()
 
+def conv_single_step(a_slice_prev, W, b):
+    s = np.multiply(a_slice_prev, W)
+    Z = np.sum(s)
+    Z += b
+
+    return Z
+
+np.random.seed(1)
+a_slice_prev = np.random.randn(4, 4, 3)
+W = np.random.randn(4, 4, 3)
+b = np.random.randn(1, 1, 1)
+
+Z = conv_single_step(a_slice_prev, W, b)
+print('Z: ' + str(Z))
