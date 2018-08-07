@@ -231,3 +231,45 @@ def distribute_value(dz, shape):
 
 a = distribute_value(2, (2, 2))
 print('distributed value = ' + str(a))
+
+# tying the pooling methods together
+def pool_backward(dA, cache, mode = 'max'):
+
+    A_prev, hyperparameters = cache
+
+    stride = hyperparameters['stride']
+    f = hyperparameters['f']
+
+    m, n_H_prev, n_W_prev, n_C_prev = A_prev.shape
+    m, n_H, n_W, n_C = dA.shape
+
+    dA_prev = np.zeros(shape = A_prev.shape)
+
+    for i in range(m):
+        a_prev = A_prev[i]
+
+        for h in range(n_H):
+            for w in range(n_W):
+                for c in range(n_C):
+
+                    vert_start = h * stride
+                    vert_end = vert_start + f
+                    horiz_start = w * stride
+                    horiz_end = horiz_start + f
+
+                    if mode == 'max':
+                        a_prev_slice = a_prev[vert_start: vert_end, horiz_start: horiz_end, c]
+                        mask = create_mask_from_window(a_prev_slice)
+
+                        dA_prev[i, vert_start: vert_end, horiz_start: horiz_end, c] += mask * dA[i, h, w, c]
+
+                    elif mode == 'average':
+                        da = dA[i, h, w, c]
+                        shape = (f, f)
+
+                        dA_prev[i, vert_start: vert_end, horiz_start: horiz_end, c] += distribute_value(da, shape)
+
+    assert(dA_prev.shape == A_prev.shape)
+
+    return dA_prev
+
