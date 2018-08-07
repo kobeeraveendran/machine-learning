@@ -204,6 +204,8 @@ print('db mean = ' + str(np.mean(db)))
 
 # backpropagation on pooling layers
 # (to propagate gradients to previous layers)
+
+# mask for max pooling
 def create_mask_from_window(x):
 
     mask = (x == np.max(x))
@@ -216,3 +218,14 @@ x = np.random.randn(2, 3)
 mask = create_mask_from_window(x)
 print('x = ' + str(x))
 print('mask = ' + str(mask))
+
+# backprop on average pooling layer
+def distribute_value(dz, shape):
+    n_H, n_W = shape
+
+    average = dz / (n_H * n_W)
+
+    a =  np.ones(shape) * average
+    
+    return a
+
