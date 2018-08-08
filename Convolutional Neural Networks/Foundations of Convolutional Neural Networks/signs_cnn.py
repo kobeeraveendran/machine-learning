@@ -32,3 +32,37 @@ print('X_test shape: ' + str(X_test.shape))
 print('Y_test shape: ' + str(Y_test.shape))
 
 conv_layers = {}
+
+def create_placeholders(n_H0, n_W0, n_C0, n_y):
+
+    X = tf.placeholder(dtype = 'float', shape = (None, n_H0, n_W0, n_C0))
+    Y = tf.placeholder(dtype = 'float', shape = (None, n_y))
+
+    return X, Y
+
+X, Y = create_placeholders(64, 64, 3, 6)
+print('X = ' + str(X))
+print('Y = ' + str(Y))
+
+
+def initialize_parameters():
+
+    tf.set_random_seed(1)
+
+    W1 = tf.get_variable('W1', shape = (4, 4, 3, 8), initializer = tf.contrib.layers.xavier_initializer(seed = 0))
+    W2 = tf.get_variable('W2', shape = (2, 2, 8, 16), initializer = tf.contrib.layers.xavier_initializer(seed = 0))
+
+    parameters = {'W1': W1, 'W2': W2}
+
+    return parameters
+
+tf.reset_default_graph()
+
+with tf.Session() as sess:
+    parameters = initialize_parameters()
+    init = tf.global_variables_initializer()
+    sess.run(init)
+
+    print('W1 = ' + str(parameters['W1'].eval()[1, 1, 1]))
+    print('W2 = ' + str(parameters['W2'].eval()[1, 1, 1]))
+    
