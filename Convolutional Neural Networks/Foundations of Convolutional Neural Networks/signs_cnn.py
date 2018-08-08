@@ -122,7 +122,7 @@ with tf.Session() as sess:
     print('cost = ' + str(a))
 '''
 
-def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009, num_epochs = 100, minibatch_size = 64, print_cost = True):
+def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009, num_epochs = 500, minibatch_size = 128, print_cost = True):
 
     ops.reset_default_graph
 
