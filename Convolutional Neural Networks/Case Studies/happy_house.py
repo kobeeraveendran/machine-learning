@@ -19,6 +19,10 @@ K.set_image_data_format('channels_last')
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
+
 X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
 
 X_train = X_train_orig / 255.0
@@ -58,3 +62,8 @@ model = HappyModel(X_train.shape[1:])
 
 model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 model.fit(x = X_train, y = Y_train, epochs = 100, batch_size = 64)
+
+predictions = model.evaluate(x = X_test, y = Y_test)
+print('\n')
+print('Loss = ' + str(predictions[0]))
+print('Test set accuracy: ' + str(predictions[1]))
