@@ -73,3 +73,19 @@ predictions = model.evaluate(x = X_test, y = Y_test)
 print('\n')
 print('Loss = ' + str(predictions[0]))
 print('Test set accuracy: ' + str(predictions[1]))
+
+# save model w/ weights
+model.save('happy_model.h5')
+
+# testing with own image
+'''
+img_path = 'images/img1.jpg'
+img = image.load_img(img_path, target_size = (64, 64))
+imshow(img)
+
+x = image.img_to_array(img)
+x = np.expand_dims(x, axis = 0)
+x = preprocess_input(x)
+
+print(model.predict(x))
+'''
