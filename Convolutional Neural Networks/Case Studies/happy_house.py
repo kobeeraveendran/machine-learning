@@ -34,3 +34,22 @@ print('Y_train shape: ' + str(Y_train.shape))
 print('X_test shape: ' + str(X_test.shape))
 print('Y_test shape: ' + str(Y_test.shape))
 
+def HappyModel(input_shape):
+
+    X_input = Input(input_shape)
+
+    X = ZeroPadding2D((3, 3))(X_input)
+
+    X = Conv2D(32, (7, 7), strides = (1, 1), name = 'conv0')(X)
+    X = BatchNormalization(axis = 3, name = 'bn0')(X)
+    X = Activation('relu')(X)
+
+    X = MaxPooling2D((2, 2), name = 'max_pool')(X)
+
+    X = Flatten()(X)
+
+    X = Dense(1, activation = 'sigmoid', name = 'fc')(X)
+
+    model = Model(inputs = X_input, outputs = X, name = 'HappyModel')
+
+    return model
