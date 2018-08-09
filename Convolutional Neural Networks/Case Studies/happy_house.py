@@ -50,6 +50,12 @@ def HappyModel(input_shape):
 
     X = MaxPooling2D((2, 2), name = 'max_pool')(X)
 
+    X = Conv2D(32, (7, 7), strides = (1, 1), name = 'conv1')(X)
+    X = BatchNormalization(axis = 3, name = 'bn1')(X)
+    X = Activation('relu')(X)
+
+    X = MaxPooling2D((4, 4), name = 'max_pool1')(X)
+
     X = Flatten()(X)
 
     X = Dense(1, activation = 'sigmoid', name = 'fc')(X)
