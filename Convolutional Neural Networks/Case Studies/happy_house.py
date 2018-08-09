@@ -12,9 +12,25 @@ import pydot
 from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 from keras.utils import plot_model
+from kt_utils import load_dataset, mean_pred
 
 import keras.backend as K
 K.set_image_data_format('channels_last')
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
+
+X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
+
+X_train = X_train_orig / 255.0
+X_test = X_test_orig / 255.0
+
+Y_train = Y_train_orig.T
+Y_test = Y_test_orig.T
+
+print('number of training examples: ' + str(X_train.shape[0]))
+print('number of testing examples: ' + str(X_test.shape[0]))
+print('X_train shape: ' + str(X_train.shape))
+print('Y_train shape: ' + str(Y_train.shape))
+print('X_test shape: ' + str(X_test.shape))
+print('Y_test shape: ' + str(Y_test.shape))
 
