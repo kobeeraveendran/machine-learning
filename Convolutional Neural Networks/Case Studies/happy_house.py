@@ -53,3 +53,8 @@ def HappyModel(input_shape):
     model = Model(inputs = X_input, outputs = X, name = 'HappyModel')
 
     return model
+
+model = HappyModel(X_train.shape[1:])
+
+model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+model.fit(x = X_train, y = Y_train, epochs = 100, batch_size = 64)
