@@ -89,3 +89,11 @@ x = preprocess_input(x)
 
 print(model.predict(x))
 '''
+
+model.summary()
+
+'''
+print('\n')
+plot_model(model, to_file = 'HappyModel.png')
+SVG(model_to_dot(model).create(prog = 'dot', format = 'svg'))
+'''
