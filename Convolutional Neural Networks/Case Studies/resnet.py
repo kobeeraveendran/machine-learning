@@ -164,4 +164,8 @@ print('X_test shape: ', X_test.shape)
 print('Y_test shape: ', Y_test.shape)
 
 # train model
-model.fit(X_train, Y_train, epochs = 2, batch_size = 32)
+model.fit(X_train, Y_train, epochs = 20, batch_size = 32)
+
+predictions = model.evaluate(X_test, Y_test)
+print('Loss = ', predictions[0])
+print('Test accuracy = ', predictions[1])
