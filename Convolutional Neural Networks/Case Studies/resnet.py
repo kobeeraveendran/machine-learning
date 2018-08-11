@@ -168,4 +168,20 @@ model.fit(X_train, Y_train, epochs = 20, batch_size = 32)
 
 predictions = model.evaluate(X_test, Y_test)
 print('Loss = ', predictions[0])
-print('Test accuracy = ', predictions[1])
+acc = predictions[1] * 100
+print('Test accuracy = ', acc)
+
+model.save('saved_resnet_models/resnet50_' + str(int(acc)) + '.h5')
+
+# test on custom, un-seen image
+img = image.load_img('images/custom_image.jpg', target_size = (64, 64))
+x = image.img_to_array(img)
+x = np.expand_dims(x, axis = 0)
+x = preprocess_input(x)
+print('Input image shape: ', x.shape)
+
+my_image = scipy.misc.imread('images/custom_image.jpg')
+imshow(my_image)
+
+print('prediction: ')
+print(np.argmax(model.predict(x)))
