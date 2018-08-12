@@ -24,3 +24,14 @@ def read_anchors(anchors_path):
 
     return anchors
 
+def generate_colors(class_names):
+    hsv_tuples = [(x / len(class_names), 1.0, 1.0) for x in range(len(class_names))]
+    colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
+    colors = list(map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)), colors))
+
+    random.seed(10101)
+    random.shuffle(colors)
+    random.seed(None)
+
+    return colors
+
