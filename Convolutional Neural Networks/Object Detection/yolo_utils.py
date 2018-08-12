@@ -35,3 +35,24 @@ def generate_colors(class_names):
 
     return colors
 
+def scale_boxes(boxes, image_shape):
+    height = image_shape[0]
+    width = image_shape[1]
+    image_dims = K.stack([height, width, height, width])
+    image_dims = K.reshape(image_dims, [1, 4])
+    boxes = boxes * image_dims
+
+    return boxes
+
+def preprocess_image(img_path, model_image_size):
+
+    image_type = imghdr.what(img_path)
+    image = Image.open(img_path)
+
+    resized_image = image.resize(tuple(reversed(model_image_size)), Image.BICUBIC)
+    image_data = np.array(resized_image, dtype = 'float32')
+    image_data /= 255.0
+    image_data = np.expand_dims(image_data, 0)
+
+    return image, image_data
+
