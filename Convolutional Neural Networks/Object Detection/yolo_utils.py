@@ -46,7 +46,6 @@ def scale_boxes(boxes, image_shape):
 
 def preprocess_image(img_path, model_image_size):
 
-    image_type = imghdr.what(img_path)
     image = Image.open(img_path)
 
     resized_image = image.resize(tuple(reversed(model_image_size)), Image.BICUBIC)
