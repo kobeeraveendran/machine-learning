@@ -16,6 +16,9 @@ from keras.models import load_model, Model
 from yolo_utils import read_classes, read_anchors, generate_colors, preprocess_image, draw_boxes, scale_boxes
 from yad2k.models.keras_yolo import yolo_head, yolo_boxes_to_corners, preprocess_true_boxes, yolo_loss, yolo_body
 
+# hide tensorflow debugging output
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
+
 def yolo_filter_boxes(box_confidence, boxes, box_class_probs, threshold = 0.6):
 
     box_scores = box_confidence * box_class_probs
