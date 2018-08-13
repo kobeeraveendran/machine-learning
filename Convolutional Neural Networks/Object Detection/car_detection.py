@@ -86,3 +86,16 @@ def yolo_non_max_suppression(scores, boxes, classes, max_boxes = 10, iou_thresho
     classes = K.gather(classes, nms_indices)
 
     return scores, boxes, classes
+
+with tf.Session() as test_b:
+    scores = tf.random_normal([54, ], mean = 1, stddev = 4, seed = 1)
+    boxes = tf.random_normal([54, 4], mean = 1, stddev = 4, seed = 1)
+    classes = tf.random_normal([54, ], mean = 1, stddev = 4, seed = 1)
+    scores, boxes, classes = yolo_non_max_suppression(scores, boxes, classes)
+
+    print('scores[2] = ', scores[2].eval())
+    print('boxes[2] = ', boxes[2].eval())
+    print('classes[2] = ', classes[2].eval())
+    print('scores shape: ', scores.shape)
+    print('boxes shape: ', boxes.shape)
+    print('classes shape: ', classes.shape)
