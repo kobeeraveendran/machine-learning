@@ -69,6 +69,11 @@ def iou(box1, box2):
 
     return iou
 
+# check iou
+box1 = (2, 1, 4, 3)
+box2 = (1, 2, 3, 4)
+print('iou = ', iou(box1, box2))
+
 def yolo_non_max_suppression(scores, boxes, classes, max_boxes = 10, iou_threshold = 0.5):
 
     max_boxes_tensor = K.variable(max_boxes, dtype = 'int32')
