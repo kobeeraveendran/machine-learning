@@ -16,3 +16,17 @@ from keras.models import load_model, Model
 from yolo_utils import read_classes, read_anchors, generate_colors, preprocess_image, draw_boxes, scale_boxes
 from yad2k.models.keras_yolo import yolo_head, yolo_boxes_to_corners, preprocess_true_boxes, yolo_loss, yolo_body
 
+def yolo_filter_boxes(box_confidence, boxes, box_class_probs, threshold = 0.6):
+
+    box_scores = box_confidence * box_class_probs
+
+    box_classes = K.argmax(box_scores, axis = -1)
+    box_class_scores = K.max(box_scores, axis = -1)
+
+    filtering_mask = box_class_scores >= threshold
+
+    scores = tf.boolean_mask(box_class_scores, filtering_mask)
+    boxes = tf.boolean_mask(boxes, filtering_mask)
+    classes = tf.boolean_mask(box_classes, filtering_mask)
+
+    return scores, boxes, classes
