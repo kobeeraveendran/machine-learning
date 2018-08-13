@@ -47,3 +47,24 @@ with tf.Session() as test_a:
     print('scores shape: ', scores.shape)
     print('boxes shape: ', boxes.shape)
     print('classes shape: ', classes.shape)
+
+
+def iou(box1, box2):
+    # find coordinates of box intersection
+    # boxes are in the following format: x1, y1, x2, y2
+    xi1 = max(box1[0], box2[0])
+    yi1 = max(box1[1], box2[1])
+    xi2 = min(box1[2], box2[2])
+    yi2 = min(box1[3], box2[3])
+
+    # calculate area of intersection
+    inter_area = max((xi2 - xi1), 0) * max((yi2 - yi1), 0)
+
+    # calculate area of the union of the two boxes
+    box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    union_area = box1_area + box2_area - inter_area
+
+    iou = inter_area / union_area
+
+    return iou
