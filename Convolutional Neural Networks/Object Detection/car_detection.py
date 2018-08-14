@@ -34,6 +34,7 @@ def yolo_filter_boxes(box_confidence, boxes, box_class_probs, threshold = 0.6):
 
     return scores, boxes, classes
 
+
 with tf.Session() as test_a:
 
     box_confidence = tf.random_normal([19, 19, 5, 1], mean = 1, stddev = 4, seed = 1)
@@ -69,6 +70,8 @@ def iou(box1, box2):
 
     return iou
 
+print('\n\n')
+
 # check iou
 box1 = (2, 1, 4, 3)
 box2 = (1, 2, 3, 4)
@@ -86,6 +89,8 @@ def yolo_non_max_suppression(scores, boxes, classes, max_boxes = 10, iou_thresho
     classes = K.gather(classes, nms_indices)
 
     return scores, boxes, classes
+
+print('\n\n')
 
 with tf.Session() as test_b:
     scores = tf.random_normal([54, ], mean = 1, stddev = 4, seed = 1)
@@ -114,4 +119,22 @@ def yolo_eval(yolo_outputs, image_shape =  (720.0, 1280.0), max_boxes = 10, scor
     scores, boxes, classes = yolo_non_max_suppression(scores, boxes, classes, iou_threshold = iou_threshold)
 
     return scores, boxes, classes
+
+print('\n\n')
+
+with tf.Session() as test_c:
+
+    yolo_outputs = (tf.random_normal([19, 19, 5, 1], mean = 1, stddev = 4, seed = 1), 
+                    tf.random_normal([19, 19, 5, 2], mean = 1, stddev = 4, seed = 1), 
+                    tf.random_normal([19, 19, 5, 2], mean = 1, stddev = 4, seed = 1), 
+                    tf.random_normal([19, 19, 5, 80], mean = 1, stddev = 4, seed = 1))
+
+    scores, boxes, classes = yolo_eval(yolo_outputs)
+
+    print('scores[2] = ', scores[2].eval())
+    print('boxes[2] = ', boxes[2].eval())
+    print('classes[2] = ', classes[2].eval())
+    print('scores shape: ', scores.shape)
+    print('boxes shape: ', boxes.shape)
+    print('classes shape: ', classes.shape)
 
