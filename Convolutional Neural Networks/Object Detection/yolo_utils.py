@@ -83,7 +83,7 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
             text_origin = np.array([left, top + 1])
 
         for i in range(thickness):
-            draw.rectange([left + i, top + i, right - i, bottom - i], outline = colors[c])
+            draw.rectangle([left + i, top + i, right - i, bottom - i], outline = colors[c])
 
         draw.rectangle([tuple(text_origin), tuple(text_origin + label_size)], fill = colors[c])
         draw.text(text_origin, label, fill = (0, 0, 0), font = font)
