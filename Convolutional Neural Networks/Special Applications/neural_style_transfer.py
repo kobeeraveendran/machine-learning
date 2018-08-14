@@ -60,7 +60,7 @@ with tf.Session() as test:
     print('GA = ', GA.eval())
 
 
-def compute_style_cost(a_S, a_G):
+def compute_layer_style_cost(a_S, a_G):
 
     m, n_H, n_W, n_C = a_G.get_shape().as_list()
 
@@ -82,6 +82,28 @@ with tf.Session() as test:
     a_S = tf.random_normal([1, 4, 4, 3], mean = 1, stddev = 4)
     a_G = tf.random_normal([1, 4, 4, 3], mean = 1, stddev = 4)
 
-    J_style_layer = compute_style_cost(a_S, a_G)
+    J_style_layer = compute_layer_style_cost(a_S, a_G)
     print('J_style_layer = ', J_style_layer.eval())
+
+
+# layer weights (play around with this to see changes in style)
+STYLE_LAYERS = [('conv1_1', 0.2), ('conv2_1', 0.2), ('conv3_1', 0.2), 
+                ('conv4_1', 0.2), ('conv5_1', 0.2)]
+
+
+def compute_style_cost(model, STYLE_LAYERS):
+
+    J_style = 0
+
+    for layer_name, coeff in STYLE_LAYERS:
+        out = model[layer_name]
+
+        a_S = sess.run(out)
+        a_G = out
+
+        J_style_layer = compute_layer_style_cost(a_S, a_G)
+
+        J_style += coeff * J_style_layer
+
+    return J_style
 
