@@ -158,3 +158,24 @@ yolo_outputs = yolo_head(yolo_model.output, anchors, len(class_names))
 # filter main boxes from the largely unnecessary boxes provided by YOLO's output
 scores, boxes, classes = yolo_eval(yolo_outputs, image_shape)
 
+# high-level steps
+# feed yolo_model.input to yolo_model, giving yolo_model.output
+# process yolo_model.output to get yolo_outputs
+# filter yolo_outputs using yolo_eval (score-filtering and non-max suppression), giving scores, boxes, classes (the predictions)
+
+def predict(sess, image_file):
+
+    image, image_data = preprocess_image('images/' + image_file, model_image_size = (608, 608))
+
+    out_scores, out_boxes, out_classes = sess.run(yolo_eval(yolo_outputs), feed_dict = {yolo_model.input: image_data, K.learning_phase: 0})
+
+    # print predictio data
+    print('Found {} boxes for {}'.format(len(out_boxes), image_file))
+    colors = generate_colors(class_names)
+    draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors)
+    image.save(os.path.join('out', image_file), quality = 90)
+
+    output_image = scipy.misc.imread(os.path.join('out', image_file))
+    imshow(output_image)
+
+    return out_scores, out_boxes, out_classes
