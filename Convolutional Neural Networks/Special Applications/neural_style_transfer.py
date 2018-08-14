@@ -9,6 +9,8 @@ from nst_utils import *
 import numpy as np
 import tensorflow as tf
 
+import time
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
 
 # content image
@@ -131,7 +133,7 @@ sess = tf.InteractiveSession()
 content_image = scipy.misc.imread('images/louvre_small.jpg')
 content_image = reshape_and_normalize_image(content_image)
 
-style_image = scipy.misc.imread('images/monet.jpg')
+style_image = scipy.misc.imread('images/starry_night.jpg')
 style_image = reshape_and_normalize_image(style_image)
 
 # initialize (noisy) generated image
@@ -156,7 +158,7 @@ J_style = compute_style_cost(model, STYLE_LAYERS)
 
 J = total_cost(J_content, J_style)
 
-optimizer = tf.train.AdamOptimizer(learning_rate = 2.0)
+optimizer = tf.train.AdamOptimizer(learning_rate = 1.0)
 
 train_step = optimizer.minimize(J)
 
@@ -187,4 +189,9 @@ def model_nn(sess, input_image, num_iterations = 200):
 
     return generated_image
 
-model_nn(sess, generated_image)
+
+start_time = time.time()
+model_nn(sess, generated_image, 200)
+end_time = time.time()
+
+print('Elapsed time: ', end_time - start_time)
