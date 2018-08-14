@@ -183,3 +183,4 @@ def predict(sess, image_file):
     return out_scores, out_boxes, out_classes
 
 out_scores, out_boxes, out_classes = predict(sess, 'test.jpg')
+out_scores, out_boxes, out_classes = predict(sess, 'giraffe.jpg')
