@@ -149,3 +149,12 @@ image_shape = (720.0, 1280.0)
 
 yolo_model = load_model('model_data/yolo.h5')
 
+# summary of YOLO model
+yolo_model.summary()
+
+# process raw yolo model output tensor
+yolo_outputs = yolo_head(yolo_model.output, anchors, len(class_names))
+
+# filter main boxes from the largely unnecessary boxes provided by YOLO's output
+scores, boxes, classes = yolo_eval(yolo_outputs, image_shape)
+
