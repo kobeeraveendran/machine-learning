@@ -107,3 +107,20 @@ def compute_style_cost(model, STYLE_LAYERS):
 
     return J_style
 
+
+# minimize style and content cost
+def total_cost(J_content, J_style, alpha = 10, beta = 40):
+
+    J = alpha * J_content + beta * J_style
+
+    return J
+
+tf.reset_default_graph()
+
+with tf.Session() as test:
+    np.random.seed(3)
+    J_content = np.random.randn()
+    J_style = np.random.randn()
+    
+    J = total_cost(J_content, J_style)
+    print('J = ', J)
