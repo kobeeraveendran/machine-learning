@@ -186,3 +186,5 @@ def model_nn(sess, input_image, num_iterations = 200):
     save_image('output/generated_image.png', generated_image)
 
     return generated_image
+
+model_nn(sess, generated_image)
