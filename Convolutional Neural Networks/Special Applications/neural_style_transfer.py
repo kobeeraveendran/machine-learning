@@ -160,3 +160,29 @@ optimizer = tf.train.AdamOptimizer(learning_rate = 2.0)
 
 train_step = optimizer.minimize(J)
 
+
+def model_nn(sess, input_image, num_iterations = 200):
+
+    sess.run(tf.global_variables_initializer())
+
+    sess.run(model['input'].assign(input_image))
+
+    for i in range(num_iterations):
+        sess.run(train_step)
+
+        generated_image = sess.run(model['input'])
+
+        if i % 20 == 0:
+            Jt, Jc, Js = sess.run([J, J_content, J_style])
+            
+            print('Iteration ' + str(i) + ': ')
+            print('total cost = ', Jt)
+            print('content cost = ', Jc)
+            print('style cost = ', Js)
+
+            save_image('output/' + str(i) + '.png', generated_image)
+
+    # save final image
+    save_image('output/generated_image.png', generated_image)
+
+    return generated_image
