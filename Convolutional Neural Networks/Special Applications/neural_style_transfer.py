@@ -16,6 +16,7 @@ model = load_vgg_model('pretrained-model/imagenet-vgg-verydeep-19.mat')
 # content image
 content_image = scipy.misc.imread('images/louvre.jpg')
 imshow(content_image)
+plt.show()
 
 
 def compute_content_cost(a_C, a_G):
@@ -38,3 +39,22 @@ with tf.Session() as test:
     J_content = compute_content_cost(a_C, a_G)
     print('J_content = ', J_content.eval())
 
+style_image = scipy.misc.imread('images/monet_800600.jpg')
+imshow(style_image)
+plt.show()
+
+# Gram matrix computation
+def gram_matrix(A):
+
+    GA = tf.matmul(A, tf.transpose(A))
+
+    return GA
+
+tf.reset_default_graph()
+
+with tf.Session() as test:
+    tf.set_random_seed(1)
+    A = tf.random_normal([3, 2], mean = 1, stddev = 4)
+    GA = gram_matrix(A)
+
+    print('GA = ', GA.eval())
