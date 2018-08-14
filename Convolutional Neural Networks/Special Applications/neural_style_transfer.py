@@ -58,3 +58,30 @@ with tf.Session() as test:
     GA = gram_matrix(A)
 
     print('GA = ', GA.eval())
+
+
+def compute_style_cost(a_S, a_G):
+
+    m, n_H, n_W, n_C = a_G.get_shape().as_list()
+
+    a_S = tf.transpose(tf.reshape(a_S, shape = (n_H * n_W, n_C)))
+    a_G = tf.transpose(tf.reshape(a_G, shape = (n_H * n_W, n_C)))
+
+    GS = gram_matrix(a_S)
+    GG = gram_matrix(a_G)
+
+    J_style_layer = (1 / (4 * (n_C ** 2) * (n_H * n_W) ** 2)) * tf.reduce_sum(tf.square(tf.subtract(GS, GG)))
+
+    return J_style_layer
+
+# test case
+tf.reset_default_graph()
+
+with tf.Session() as test:
+    tf.set_random_seed(1)
+    a_S = tf.random_normal([1, 4, 4, 3], mean = 1, stddev = 4)
+    a_G = tf.random_normal([1, 4, 4, 3], mean = 1, stddev = 4)
+
+    J_style_layer = compute_style_cost(a_S, a_G)
+    print('J_style_layer = ', J_style_layer.eval())
+
