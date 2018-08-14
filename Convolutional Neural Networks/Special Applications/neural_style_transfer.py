@@ -11,8 +11,6 @@ import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
 
-model = load_vgg_model('pretrained-model/imagenet-vgg-verydeep-19.mat')
-
 # content image
 content_image = scipy.misc.imread('images/louvre.jpg')
 imshow(content_image)
@@ -124,3 +122,41 @@ with tf.Session() as test:
     
     J = total_cost(J_content, J_style)
     print('J = ', J)
+
+
+# main NST steps
+tf.reset_default_graph()
+sess = tf.InteractiveSession()
+
+content_image = scipy.misc.imread('images/louvre_small.jpg')
+content_image = reshape_and_normalize_image(content_image)
+
+style_image = scipy.misc.imread('images/monet.jpg')
+style_image = reshape_and_normalize_image(style_image)
+
+# initialize (noisy) generated image
+generated_image = generate_noise_image(content_image)
+imshow(generated_image[0])
+plt.show()
+
+# load model
+model = load_vgg_model('pretrained-model/imagenet-vgg-verydeep-19.mat')
+
+sess.run(model['input'].assign(content_image))
+
+out = model['conv4_2']
+
+a_C = sess.run(out)
+a_G = out
+J_content = compute_content_cost(a_C, a_G)
+
+sess.run(model['input'].assign(style_image))
+
+J_style = compute_style_cost(model, STYLE_LAYERS)
+
+J = total_cost(J_content, J_style)
+
+optimizer = tf.train.AdamOptimizer(learning_rate = 2.0)
+
+train_step = optimizer.minimize(J)
+
