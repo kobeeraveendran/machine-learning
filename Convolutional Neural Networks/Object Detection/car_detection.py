@@ -138,3 +138,14 @@ with tf.Session() as test_c:
     print('boxes shape: ', boxes.shape)
     print('classes shape: ', classes.shape)
 
+
+
+# test on images with pre-trained model
+sess = K.get_session()
+
+class_names = read_classes('model_data/coco_classes.txt')
+anchors = read_anchors('model_data/yolo_anchors.txt')
+image_shape = (720.0, 1280.0)
+
+yolo_model = load_model('model_data/yolo.h5')
+
