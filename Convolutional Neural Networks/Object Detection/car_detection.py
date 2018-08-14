@@ -167,6 +167,7 @@ def predict(sess, image_file):
 
     image, image_data = preprocess_image('images/' + image_file, model_image_size = (608, 608))
 
+    # alternative for first param is [scores, boxes, classes]
     out_scores, out_boxes, out_classes = sess.run(yolo_eval(yolo_outputs), feed_dict = {yolo_model.input: image_data, K.learning_phase: 0})
 
     # print predictio data
