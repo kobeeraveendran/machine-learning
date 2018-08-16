@@ -91,3 +91,29 @@ def verify(image_path, identity, database, model):
 verify('images/camera_0.jpg', 'younes', database, FRmodel)
 
 verify('images/camera_2.jpg', 'kian', database, FRmodel)
+
+
+def face_recognition(image_path, database, model):
+
+    encoding = img_to_encoding(image_path, model)
+
+    min_dist = 100
+
+    for (name, db_encoding) in database.items():
+
+        dist = np.linalg.norm(db_encoding - encoding)
+
+        if dist < min_dist:
+            min_dist = dist
+            identity = name
+
+    if min_dist > 0.7:
+        print('No match found, access denied.')
+
+    else:
+        print(str(identity) + ' identified. Access granted.')
+
+    return min_dist, identity
+
+# test face rec
+face_recognition('images/camera_2.jpg', database, FRmodel)
