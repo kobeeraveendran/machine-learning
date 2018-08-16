@@ -88,3 +88,6 @@ def verify(image_path, identity, database, model):
 
     return dist, door_open
 
+verify('images/camera_0.jpg', 'younes', database, FRmodel)
+
+verify('images/camera_2.jpg', 'kian', database, FRmodel)
