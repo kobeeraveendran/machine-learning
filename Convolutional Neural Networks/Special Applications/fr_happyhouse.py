@@ -24,3 +24,21 @@ from inception_blocks_v2 import *
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 np.set_printoptions(threshold = np.nan)
+
+FRmodel = faceRecoModel(input_shape = (3, 96, 96))
+print('Total parameters = ', FRmodel.count_params())
+
+
+def triplet_loss(y_true, y_pred, alpha = 0.2):
+
+    anchor, positive, negative = y_pred[0], y_pred[1], y_pred[2]
+
+    pos_dist = tf.square(tf.linalg.norm(tf.subtract(anchor, positive), axis = -1))
+    neg_dist = tf.square(tf.linalg.norm(tf.subtract(anchor, negative), axis = -1))
+    
+    basic_loss = tf.add(tf.subtract(pos_dist, neg_dist), alpha)
+    
+    loss = tf.reduce_sum(tf.maximum(0.0, basic_loss))
+
+    return loss
+
