@@ -72,3 +72,19 @@ database['felix'] = img_to_encoding('images/felix.jpg', FRmodel)
 database['benoit'] = img_to_encoding('images/benoit.jpg', FRmodel)
 database['arnaud'] = img_to_encoding('images/arnaud.jpg', FRmodel)
 
+
+def verify(image_path, identity, database, model):
+
+    encoding = img_to_encoding(image_path, model)
+
+    dist = tf.square(tf.norm(tf.subtract(identity, encoding), axis = -1))
+
+    if dist > 0.7:
+        print("Faces match, access granted.")
+        door_open = True
+    else:
+        print("No match found, access denied.")
+        door_open = False
+
+    return dist, door_open
+
