@@ -22,3 +22,5 @@ from fr_utils import *
 from inception_blocks_v2 import *
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+np.set_printoptions(threshold = np.nan)
