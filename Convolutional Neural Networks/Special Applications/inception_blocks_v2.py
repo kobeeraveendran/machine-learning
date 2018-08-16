@@ -10,6 +10,8 @@ from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 import fr_utils
 from keras.layers.core import Lambda, Flatten, Dense
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 def inception_block_1a(X):
     """
     Implementation of an inception block

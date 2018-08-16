@@ -12,6 +12,8 @@ from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 import h5py
 import matplotlib.pyplot as plt
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 def variable(value, dtype = 'float32', name = None):
     v = tf.Variable(np.asarray(value, dtype = dtype), name = name)
