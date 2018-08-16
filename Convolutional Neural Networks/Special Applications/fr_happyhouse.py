@@ -77,7 +77,7 @@ def verify(image_path, identity, database, model):
 
     encoding = img_to_encoding(image_path, model)
 
-    dist = tf.square(tf.norm(tf.subtract(identity, encoding), axis = -1))
+    dist = np.linalg.norm(database[identity] - encoding)
 
     if dist > 0.7:
         print("Faces match, access granted.")
