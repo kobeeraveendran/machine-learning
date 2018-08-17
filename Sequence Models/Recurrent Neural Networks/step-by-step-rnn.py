@@ -98,3 +98,37 @@ np.testing.assert_array_almost_equal(caches[1][1][3], [-1.1425182, -0.34934272, 
 print('Passed.')
 
 print('Passed.') if len(caches) == 2 else print('Failed.')
+
+
+# LSTM single-step cell
+
+def lstm_cell_forward(xt, a_prev, c_prev, parameters):
+
+    Wf = parameters['Wf']
+    bf = parameters['bf']
+    Wi = parameters['Wi']
+    bi = parameters['bi']
+    Wc = parameters['Wc']
+    bc = parameters['bc']
+    Wo = parameters['Wo']
+    bo = parameters['bo']
+    Wy = parameters['Wy']
+    by = parameters['by']
+
+    #n_x, m = xt.shape
+    #n_y, n_a = Wy.shape
+
+    concat = np.concatenate(a_prev, xt, axis = 1)
+
+    ft = sigmoid(np.dot(Wf, concat) + bf)
+    it = sigmoid(np.dot(Wi, concat) + bi)
+    cct = np.tanh(np.dot(Wc, concat) + bc)
+    c_next = ft * c_prev + it * cct
+    ot = sigmoid(np.dot(Wo, concat) + bo)
+    a_next = ot * np.tanh(c_next)
+
+    yt_pred = softmax(a_next)
+
+    cache = (a_next, c_next, a_prev, c_prev, ft, it, cct, ot, xt, parameters)
+
+    return a_next, c_next, yt_pred, cache
