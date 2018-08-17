@@ -200,3 +200,43 @@ def lstm_forward(x, a0, parameters):
     caches = (caches, x)
 
     return a, y, c, caches
+
+
+# check LSTM forward prop
+np.random.seed(1)
+x = np.random.randn(3, 10, 7)
+a0 = np.random.randn(5, 10)
+Wf = np.random.randn(5, 5 + 3)
+bf = np.random.randn(5, 1)
+Wi = np.random.randn(5, 5 + 3)
+bi = np.random.randn(5, 1)
+Wo = np.random.randn(5, 5 + 3)
+bo = np.random.randn(5, 1)
+Wc = np.random.randn(5, 5 + 3)
+bc = np.random.randn(5, 1)
+Wy = np.random.randn(2, 5)
+by = np.random.randn(2, 1)
+
+parameters = {"Wf": Wf, "Wi": Wi, "Wo": Wo, "Wc": Wc, "Wy": Wy, "bf": bf, "bi": bi, "bo": bo, "bc": bc, "by": by}
+
+a, y, c, caches = lstm_forward(x, a0, parameters)
+
+print('\n\nLSTM forward propagation multi-step check:')
+
+np.testing.assert_almost_equal(a[4][3][6], 0.172117767533, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if a.shape == (5, 10, 7) else print('Failed.')
+
+np.testing.assert_almost_equal(y[1][4][3], 0.95087346185, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if y.shape == (2, 10, 7) else print('Failed.')
+
+np.testing.assert_array_almost_equal(caches[1][1][1], [ 0.82797464, 0.23009474, 0.76201118, -0.22232814, -0.20075807, 0.18656139, 0.41005165], err_msg = 'Failed.')
+print('Passed.')
+
+np.testing.assert_almost_equal(c[1][2][1], -0.855544916718, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if len(caches) == 2 else print('Failed.')
