@@ -31,10 +31,17 @@ parameters = {'Waa': Waa, 'Wax': Wax, 'Wya': Wya, 'ba': ba, 'by': by}
 
 a_next, yt_pred, cache = rnn_cell_forward(xt, a_prev, parameters)
 
-print('a_next[4] = ', a_next[4])
-print('a_next shape: ', a_next.shape)
-print('yt_pred[1] = ', yt_pred[1])
-print('yt_pred shape: ', yt_pred.shape)
+print('\nSingle-step RNN cell check:')
+
+np.testing.assert_array_almost_equal(a_next[4], [0.59584544, 0.18141802, 0.61311866, 0.99808218, 0.85016201, 0.99980978, -0.18887155, 0.99815551, 0.6531151, 0.82872037], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if a_next.shape == (5, 10) else print('Failed.')
+
+np.testing.assert_array_almost_equal(yt_pred[1], [0.9888161, 0.01682021, 0.21140899, 0.36817467, 0.98988387, 0.88945212, 0.36920224, 0.9966312, 0.9982559, 0.17746526], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if yt_pred.shape == (2, 10) else print('Failed.')
 
 
 # forward prop (cycle the single-step RNN cells over T time-steps)
