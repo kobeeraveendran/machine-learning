@@ -60,4 +60,34 @@ def rnn_forward(x, a0, parameters):
 
     caches = (caches, x)
 
-    return a, yt_pred, caches
+    return a, y_pred, caches
+
+# check rnn forwardprop
+np.random.seed(1)
+x = np.random.randn(3, 10, 4)
+a0 = np.random.randn(5, 10)
+Waa = np.random.randn(5, 5)
+Wax = np.random.randn(5, 3)
+Wya = np.random.randn(2, 5)
+ba = np.random.randn(5, 1)
+by = np.random.randn(2, 1)
+parameters = {'Waa': Waa, 'Wax': Wax, 'Wya': Wya, 'ba': ba, 'by': by}
+
+a, y_pred, caches = rnn_forward(x, a0, parameters)
+
+print('\n\nRNN Forwardprop check:')
+
+np.testing.assert_array_almost_equal(a[4][1], [-0.99999375, 0.77911235, -0.99861469, -0.99833267], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if a.shape == (5, 10, 4) else print('Failed.')
+
+np.testing.assert_array_almost_equal(y_pred[1][3], [0.79560373, 0.86224861, 0.11118257, 0.81515947], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if y_pred.shape == (2, 10, 4) else print('Failed.')
+
+np.testing.assert_array_almost_equal(caches[1][1][3], [-1.1425182, -0.34934272, -0.20889423, 0.58662319], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if len(caches) == 2 else print('Failed.')
