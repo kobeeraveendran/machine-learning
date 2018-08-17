@@ -171,3 +171,32 @@ np.testing.assert_array_almost_equal(cache[1][3], [-0.16263996, 1.03729328, 0.72
 print('Passed.')
 
 print('Passed.') if len(cache) == 10 else print('Failed.')
+
+
+# LSTM over T_x time steps
+def lstm_forward(x, a0, parameters):
+
+    caches = []
+
+    n_x, m, T_x = x.shape
+    n_y, n_a = parameters['Wy'].shape
+
+    a = np.zeros((n_a, m, T_x))
+    c = np.zeros((n_a, m, T_x))
+    y = np.zeros((n_y, m, T_x))
+
+    a_next = a0
+    c_next = np.zeros(a0.shape)
+
+    for t in range(T_x):
+        a_next, c_next, yt, cache = lstm_cell_forward(x[..., t], a_next, c_next, parameters)
+
+        a[..., t] = a_next
+        c[..., t] = c_next
+        y[..., t] = yt
+
+        caches.append(cache)
+
+    caches = (caches, x)
+
+    return a, y, c, caches
