@@ -118,7 +118,7 @@ def lstm_cell_forward(xt, a_prev, c_prev, parameters):
     #n_x, m = xt.shape
     #n_y, n_a = Wy.shape
 
-    concat = np.concatenate(a_prev, xt, axis = 1)
+    concat = np.vstack((a_prev, xt))
 
     ft = sigmoid(np.dot(Wf, concat) + bf)
     it = sigmoid(np.dot(Wi, concat) + bi)
@@ -127,7 +127,7 @@ def lstm_cell_forward(xt, a_prev, c_prev, parameters):
     ot = sigmoid(np.dot(Wo, concat) + bo)
     a_next = ot * np.tanh(c_next)
 
-    yt_pred = softmax(a_next)
+    yt_pred = softmax(np.dot(Wy, a_next) + by)
 
     cache = (a_next, c_next, a_prev, c_prev, ft, it, cct, ot, xt, parameters)
 
