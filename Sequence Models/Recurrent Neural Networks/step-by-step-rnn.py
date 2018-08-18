@@ -409,28 +409,55 @@ def lstm_cell_backward(da_next, dc_next, cache):
     n_a, m = a_next.shape
 
     dot = da_next * np.tanh(c_next) * ot * (1 - ot)
-    dcct = dc_next * it + ot * (1 - np.tanh(c_next)) * it * da_next * cct * (1 - np.tanh(cct) ** 2)
-    dit = dc_next * cct + ot * (1 - np.tanh(c_next) ** 2) * cct * da_next * it * (1 - it)
-    dft = dc_next * c_prev + ot * (1 - np.tanh(c_next) ** 2) * c_prev * da_next * ft * (1 - ft)
+    dcct = (dc_next * it + ot * (1 - np.tanh(c_next)) * it * da_next) * (1 - np.tanh(cct) ** 2)
+    dit = (dc_next * cct + ot * (1 - np.tanh(c_next) ** 2) * cct * da_next) * it * (1 - it)
+    dft = (dc_next * c_prev + ot * (1 - np.tanh(c_next) ** 2) * c_prev * da_next) * ft * (1 - ft)
 
-    dWf = np.dot(dft, np.vstack((a_prev, xt)).T)
-    dWi = np.dot(dit, np.vstack((a_prev, xt)).T)
-    dWc = np.dot(dcct, np.vstack((a_prev, xt)).T)
-    dWo = np.dot(dot, np.vstack((a_prev, xt)).T)
+    dWf = np.multiply(dft, np.vstack((a_prev, xt)).T)
+    dWi = np.multiply(dit, np.vstack((a_prev, xt)).T)
+    dWc = np.multiply(dcct, np.vstack((a_prev, xt)).T)
+    dWo = np.multiply(dot, np.vstack((a_prev, xt)).T)
 
-    dbf = np.sum(dWf, axis = 1, keepdims = True)
-    dbi = np.sum(dWi, axis = 1, keepdims = True)
-    dbc = np.sum(dWc, axis = 1, keepdims = True)
-    dbo = np.sum(dWo, axis = 1, keepdims = True)
+    dbf = np.sum(dft, axis = 1, keepdims = True)
+    dbi = np.sum(dit, axis = 1, keepdims = True)
+    dbc = np.sum(dcct, axis = 1, keepdims = True)
+    dbo = np.sum(dot, axis = 1, keepdims = True)
 
-    da_prev = np.dot(parameters['Wf'].T, dft) + np.dot(parameters['Wi'].T, dit) + np.dot(parameters['Wc'].T, dcct) + np.dot(parameters['Wo'].T, dot)
+    da_prev = np.dot(Wf[..., :n_a].T, dft) + np.dot(Wi[..., :n_a].T, dit) + np.dot(Wc[..., :n_a].T, dcct) + np.dot(Wo[..., :n_a].T, dot)
 
     dc_prev = dc_next * ft + ot  * (1 - np.tanh(c_next) ** 2) * ft * da_next
 
-    dxt = np.dot(parameters['Wf'].T, dft) + np.dot(parameters['Wi'].T, dit) + np.dot(parameters['Wc'].T, dcct) + np.dot(parameters['Wo'].T, dot)
+    dxt = np.dot(Wf[..., n_a:].T, dft) + np.dot(Wi[..., n_a:].T, dit) + np.dot(Wc[..., n_a:].T, dcct) + np.dot(Wo[..., n_a:].T, dot)
 
     gradients = {"dxt": dxt, "da_prev": da_prev, "dc_prev": dc_prev, "dWf": dWf, "dbf": dbf, "dWi": dWi, "dbi": dbi, 
                 "dWc": dWc, "dbc": dbc, "dWo": dWo, "dbo": dbo}
 
     return gradients
+
+# test case for LSTM single time-step backprop
+np.random.seed(1)
+xt = np.random.randn(3,10)
+a_prev = np.random.randn(5,10)
+c_prev = np.random.randn(5,10)
+Wf = np.random.randn(5, 5+3)
+bf = np.random.randn(5,1)
+Wi = np.random.randn(5, 5+3)
+bi = np.random.randn(5,1)
+Wo = np.random.randn(5, 5+3)
+bo = np.random.randn(5,1)
+Wc = np.random.randn(5, 5+3)
+bc = np.random.randn(5,1)
+Wy = np.random.randn(2,5)
+by = np.random.randn(2,1)
+
+parameters = {"Wf": Wf, "Wi": Wi, "Wo": Wo, "Wc": Wc, "Wy": Wy, "bf": bf, "bi": bi, "bo": bo, "bc": bc, "by": by}
+
+a_next, c_next, yt, cache = lstm_cell_forward(xt, a_prev, c_prev, parameters)
+
+da_next = np.random.randn(5, 10)
+dc_next = np.random.randn(5, 10)
+
+gradients = lstm_cell_backward(da_next, dc_next, cache)
+
+print('\n\nLSTM single time-step backprop check:')
 
