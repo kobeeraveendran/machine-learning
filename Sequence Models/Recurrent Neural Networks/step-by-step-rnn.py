@@ -12,8 +12,6 @@ def rnn_cell_forward(xt, a_prev, parameters):
 
     a_next = np.tanh(np.dot(Waa, a_prev) + np.dot(Wax, xt) + ba)
 
-    print('a_next = ', a_next)
-
     yt_pred = softmax(np.dot(Wya, a_next) + by)
 
     cache = (a_next, a_prev, xt, parameters)
@@ -246,7 +244,7 @@ print('Passed.') if len(caches) == 2 else print('Failed.')
 def rnn_cell_backward(da_next, cache):
 
     (a_next, a_prev, xt, parameters) = cache
-
+    '''
     a_next = [[ 0.23756824,  0.90700492,  0.95749986,  0.97376,     0.83485443,  0.80079455,
             0.20685588,  0.6411085,   0.37361983,  0.99437934],
             [ 0.99019631,  0.22030685, -0.54404291,  0.83951395,  0.88793516,  0.71195733,
@@ -257,7 +255,7 @@ def rnn_cell_backward(da_next, cache):
             0.99574168, -0.95307262, -0.99742405,  0.96518833],
             [-0.99958139,  0.99621034,  0.99489029,  0.85464423,  0.00613632, -0.94264136,
             -0.51491693, -0.55118625, -0.91845857, -0.99990088]]
-
+    '''
     Wax = parameters['Wax']
     Waa = parameters['Waa']
     Wya = parameters['Wya']
@@ -281,15 +279,15 @@ def rnn_cell_backward(da_next, cache):
 
 # check RNN cell backprop
 np.random.seed(1)
-xt = np.random.randn(3, 10)
-a_prev = np.random.randn(5, 10)
-Wax = np.random.randn(5, 3)
-Waa = np.random.randn(5, 5)
-Wya = np.random.randn(2, 5)
-ba = np.random.randn(5, 1)
-by = np.random.randn(2, 1)
+xt = np.random.randn(3,10)
+a_prev = np.random.randn(5,10)
+Wax = np.random.randn(5,3)
+Waa = np.random.randn(5,5)
+Wya = np.random.randn(2,5)
+b = np.random.randn(5,1)
+by = np.random.randn(2,1)
 
-parameters = {'Wax': Wax, 'Waa': Waa, 'Wya': Wya, 'ba': ba, 'by': by}
+parameters = {"Wax": Wax, "Waa": Waa, "Wya": Wya, "ba": ba, "by": by}
 
 a_next, yt, cache = rnn_cell_forward(xt, a_prev, parameters)
 da_next = np.random.randn(5, 10)
@@ -297,8 +295,6 @@ da_next = np.random.randn(5, 10)
 gradients = rnn_cell_backward(da_next, cache)
 
 print('\n\nRNN cell backpropagation check:')
-
-print("gradients[\"da_prev\"][2][3] =", gradients["da_prev"][2][3])
 
 np.testing.assert_almost_equal(gradients['dxt'][1][2], -0.460564103059, err_msg = 'Failed.')
 print('Passed.')
@@ -324,4 +320,3 @@ np.testing.assert_array_almost_equal(gradients['dba'][4], [0.80517166], err_msg 
 print('Passed.')
 
 print('Passed.') if gradients['dba'].shape == (5, 1) else print('Failed.')
-
