@@ -354,3 +354,47 @@ def rnn_backward(da, caches):
 
     return gradients
 
+
+# test case for RNN backprop
+np.random.seed(1)
+x = np.random.randn(3, 10, 4)
+a0 = np.random.randn(5, 10)
+Wax = np.random.randn(5, 3)
+Waa = np.random.randn(5, 5)
+Wya = np.random.randn(2, 5)
+ba = np.random.randn(5, 1)
+by = np.random.randn(2, 1)
+
+parameters = {"Wax": Wax, "Waa": Waa, "Wya": Wya, "ba": ba, "by": by}
+
+a, y, caches = rnn_forward(x, a0, parameters)
+da = np.random.randn(5, 10, 4)
+
+gradients = rnn_backward(da, caches)
+
+print('\n\nRNN Backprop through T_x time steps check:')
+
+np.testing.assert_array_almost_equal(gradients['dx'][1][2], [-2.07101689, -0.59255627, 0.02466855, 0.01483317], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dx'].shape == (3, 10, 4) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['da0'][2][3], -0.314942375127, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['da0'].shape == (5, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWax'][3][1], 11.2641044965, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWax'].shape == (5, 3) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWaa'][1][2], 2.30333312658, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWaa'].shape == (5, 5) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dba'][4], [-0.74747722], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dba'].shape == (5, 1) else print('Failed.')
