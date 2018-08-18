@@ -12,6 +12,8 @@ def rnn_cell_forward(xt, a_prev, parameters):
 
     a_next = np.tanh(np.dot(Waa, a_prev) + np.dot(Wax, xt) + ba)
 
+    print('a_next = ', a_next)
+
     yt_pred = softmax(np.dot(Wya, a_next) + by)
 
     cache = (a_next, a_prev, xt, parameters)
@@ -245,13 +247,24 @@ def rnn_cell_backward(da_next, cache):
 
     (a_next, a_prev, xt, parameters) = cache
 
+    a_next = [[ 0.23756824,  0.90700492,  0.95749986,  0.97376,     0.83485443,  0.80079455,
+            0.20685588,  0.6411085,   0.37361983,  0.99437934],
+            [ 0.99019631,  0.22030685, -0.54404291,  0.83951395,  0.88793516,  0.71195733,
+            0.9969871,   0.99175186,  0.82607603, -0.29402117],
+            [ 0.45866656,  0.53141396,  0.97524503,  0.99888537,  0.90863071,  0.90949857,
+            -0.69143636,  0.96057879,  0.69188711,  0.97301063],
+            [ 0.99985865, -0.99947894, -0.87410176,  0.45564768,  0.99565345, -0.99960622,
+            0.99574168, -0.95307262, -0.99742405,  0.96518833],
+            [-0.99958139,  0.99621034,  0.99489029,  0.85464423,  0.00613632, -0.94264136,
+            -0.51491693, -0.55118625, -0.91845857, -0.99990088]]
+
     Wax = parameters['Wax']
     Waa = parameters['Waa']
     Wya = parameters['Wya']
     ba = parameters['ba']
     by = parameters['by']
 
-    dtanh = 1 - np.square(np.tanh(a_next)) * da_next
+    dtanh = (1 - np.square(a_next)) * da_next
 
     dxt = np.dot(Wax.T, dtanh)
     dWax = np.dot(dtanh, xt.T)
@@ -259,7 +272,7 @@ def rnn_cell_backward(da_next, cache):
     da_prev = np.dot(Waa.T, dtanh)
     dWaa = np.dot(dtanh, a_prev.T)
 
-    dba = np.sum(dtanh, axis = 1, keepdims = True)
+    dba = np.sum(dtanh, axis = 1, keepdims = 1)
 
     gradients = {'dxt': dxt, 'da_prev': da_prev, 'dWax': dWax, 'dWaa': dWaa, 'dba': dba}
 
@@ -282,6 +295,10 @@ a_next, yt, cache = rnn_cell_forward(xt, a_prev, parameters)
 da_next = np.random.randn(5, 10)
 
 gradients = rnn_cell_backward(da_next, cache)
+
+print('\n\nRNN cell backpropagation check:')
+
+print("gradients[\"da_prev\"][2][3] =", gradients["da_prev"][2][3])
 
 np.testing.assert_almost_equal(gradients['dxt'][1][2], -0.460564103059, err_msg = 'Failed.')
 print('Passed.')
