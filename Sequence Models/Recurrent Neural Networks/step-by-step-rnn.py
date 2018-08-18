@@ -240,3 +240,27 @@ np.testing.assert_almost_equal(c[1][2][1], -0.855544916718, err_msg = 'Failed.')
 print('Passed.')
 
 print('Passed.') if len(caches) == 2 else print('Failed.')
+
+def rnn_cell_backward(da_next, cache):
+
+    (a_next, a_prev, xt, parameters) = cache
+
+    Wax = parameters['Wax']
+    Waa = parameters['Waa']
+    Wya = parameters['Wya']
+    ba = parameters['ba']
+    by = parameters['by']
+
+    dtanh = 1 - np.square(np.tanh(a_next)) * da_next
+
+    dxt = np.dot(Wax.T, dtanh)
+    dWax = np.dot(dtanh, xt.T)
+
+    da_prev = np.dot(Waa.T, dtanh)
+    dWaa = np.dot(dtanh, a_prev.T)
+
+    dba = np.sum(dtanh, axis = 1, keepdims = True)
+
+    gradients = {'dxt': dxt, 'da_prev': da_prev, 'dWax': dWax, 'dWaa': dWaa, 'dba': dba}
+
+    return gradients
