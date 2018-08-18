@@ -398,3 +398,39 @@ np.testing.assert_array_almost_equal(gradients['dba'][4], [-0.74747722], err_msg
 print('Passed.')
 
 print('Passed.') if gradients['dba'].shape == (5, 1) else print('Failed.')
+
+
+# lstm single time-step backprop
+def lstm_cell_backward(da_next, dc_next, cache):
+
+    (a_next, c_next, a_prev, c_prev, ft, it, cct, ot, xt, parameters) = cache
+
+    n_x, m = xt.shape
+    n_a, m = a_next.shape
+
+    dot = da_next * np.tanh(c_next) * ot * (1 - ot)
+    dcct = dc_next * it + ot * (1 - np.tanh(c_next)) * it * da_next * cct * (1 - np.tanh(cct) ** 2)
+    dit = dc_next * cct + ot * (1 - np.tanh(c_next) ** 2) * cct * da_next * it * (1 - it)
+    dft = dc_next * c_prev + ot * (1 - np.tanh(c_next) ** 2) * c_prev * da_next * ft * (1 - ft)
+
+    dWf = np.dot(dft, np.vstack((a_prev, xt)).T)
+    dWi = np.dot(dit, np.vstack((a_prev, xt)).T)
+    dWc = np.dot(dcct, np.vstack((a_prev, xt)).T)
+    dWo = np.dot(dot, np.vstack((a_prev, xt)).T)
+
+    dbf = np.sum(dWf, axis = 1, keepdims = True)
+    dbi = np.sum(dWi, axis = 1, keepdims = True)
+    dbc = np.sum(dWc, axis = 1, keepdims = True)
+    dbo = np.sum(dWo, axis = 1, keepdims = True)
+
+    da_prev = np.dot(parameters['Wf'].T, dft) + np.dot(parameters['Wi'].T, dit) + np.dot(parameters['Wc'].T, dcct) + np.dot(parameters['Wo'].T, dot)
+
+    dc_prev = dc_next * ft + ot  * (1 - np.tanh(c_next) ** 2) * ft * da_next
+
+    dxt = np.dot(parameters['Wf'].T, dft) + np.dot(parameters['Wi'].T, dit) + np.dot(parameters['Wc'].T, dcct) + np.dot(parameters['Wo'].T, dot)
+
+    gradients = {"dxt": dxt, "da_prev": da_prev, "dc_prev": dc_prev, "dWf": dWf, "dbf": dbf, "dWi": dWi, "dbi": dbi, 
+                "dWc": dWc, "dbc": dbc, "dWo": dWo, "dbo": dbo}
+
+    return gradients
+
