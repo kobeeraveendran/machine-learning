@@ -264,3 +264,47 @@ def rnn_cell_backward(da_next, cache):
     gradients = {'dxt': dxt, 'da_prev': da_prev, 'dWax': dWax, 'dWaa': dWaa, 'dba': dba}
 
     return gradients
+
+
+# check RNN cell backprop
+np.random.seed(1)
+xt = np.random.randn(3, 10)
+a_prev = np.random.randn(5, 10)
+Wax = np.random.randn(5, 3)
+Waa = np.random.randn(5, 5)
+Wya = np.random.randn(2, 5)
+ba = np.random.randn(5, 1)
+by = np.random.randn(2, 1)
+
+parameters = {'Wax': Wax, 'Waa': Waa, 'Wya': Wya, 'ba': ba, 'by': by}
+
+a_next, yt, cache = rnn_cell_forward(xt, a_prev, parameters)
+da_next = np.random.randn(5, 10)
+
+gradients = rnn_cell_backward(da_next, cache)
+
+np.testing.assert_almost_equal(gradients['dxt'][1][2], -0.460564103059, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dxt'].shape == (3, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['da_prev'][2][3], 0.0842968653807, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['da_prev'].shape == (5, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWax'][3][1], 0.393081873922, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWax'].shape == (5, 3) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWaa'][1][2], -0.28483955787, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWaa'].shape == (5, 5) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dba'][4], [0.80517166], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dba'].shape == (5, 1) else print('Failed.')
+
