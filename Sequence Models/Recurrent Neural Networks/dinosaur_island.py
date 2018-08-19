@@ -16,11 +16,11 @@ print(ix_to_char)
 
 # (not part of notebook) personal function used to make automatic testing easier
 def autocheck(actual, desired, check_type = 'vector'):
-    if check_type == 'vector' or type(actual) == np.ndarray:
+    if type(actual) == np.ndarray or check_type == 'vector':
         np.testing.assert_array_almost_equal(actual, desired, err_msg = 'Failed.')
         print('Passed.')
 
-    elif check_type == 'scalar' or np.isscalar(actual):
+    elif np.isscalar(actual) or check_type == 'scalar':
         np.testing.assert_almost_equal(actual, desired, err_msg = 'Failed.')
         print('Passed.')
 
@@ -141,3 +141,25 @@ def optimize(X, Y, a_prev, parameters, learning_rate = 0.01):
 
     return loss, gradients, a[len(X) - 1]
 
+
+# optimizer check
+np.random.seed(1)
+vocab_size, n_a = 27, 100
+a_prev = np.random.randn(n_a, 1)
+Wax, Waa, Wya = np.random.randn(n_a, vocab_size), np.random.randn(n_a, n_a), np.random.randn(vocab_size, n_a)
+b, by = np.random.randn(n_a, 1), np.random.randn(vocab_size, 1)
+parameters = {"Wax": Wax, "Waa": Waa, "Wya": Wya, "b": b, "by": by}
+X = [12,3,5,11,22,3]
+Y = [4,14,11,22,25, 26]
+
+loss, gradients, a_last = optimize(X, Y, a_prev, parameters)
+
+print('\n\nOptimizer check:')
+
+autocheck(loss, 126.503975722)
+autocheck(gradients['dWaa'][1][2], 0.194709315347)
+autocheck(np.argmax(gradients['dWax']), 93)
+autocheck(gradients['dWya'][1][2], -0.007773876032)
+autocheck(gradients['db'][4], [-0.06809825])
+autocheck(gradients['dby'][1], [0.01538192])
+autocheck(a_last[4], [-1.0])
