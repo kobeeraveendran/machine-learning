@@ -202,7 +202,7 @@ def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_n
         loss = smooth(loss, curr_loss)
 
         if j % 2000 == 0:
-            print('Iteration {}: Loss {} + \n'.format(j, loss))
+            print('Iteration {}: Loss {}\n'.format(j, loss))
 
             seed = 0
 
@@ -216,3 +216,5 @@ def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_n
             print('\n')
     
     return parameters
+
+parameters = model(data, ix_to_char, char_to_ix)
