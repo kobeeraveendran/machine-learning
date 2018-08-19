@@ -60,19 +60,31 @@ autocheck(gradients['dby'][1], [8.45833407])
 
 # sampling function
 def sample(parameters, char_to_ix, seed):
+    """
+    Sample a sequence of characters according to a sequence of probability distributions output of the RNN
 
+    Arguments:
+    parameters -- python dictionary containing the parameters Waa, Wax, Wya, by, and b. 
+    char_to_ix -- python dictionary mapping each character to an index.
+    seed -- used for grading purposes. Do not worry about it.
+
+    Returns:
+    indices -- a list of length n containing the indices of the sampled characters.
+    """
+    
+    # Retrieve parameters and relevant shapes from "parameters" dictionary
     Waa, Wax, Wya, by, b = parameters['Waa'], parameters['Wax'], parameters['Wya'], parameters['by'], parameters['b']
     vocab_size = by.shape[0]
     n_a = Waa.shape[1]
     
-    
     x = np.zeros((vocab_size, 1))
+    
     a_prev = np.zeros((n_a, 1))
     
     indices = []
-
+    
     idx = -1 
-
+    
     counter = 0
     newline_character = char_to_ix['\n']
     
@@ -81,7 +93,7 @@ def sample(parameters, char_to_ix, seed):
         a = np.tanh(np.dot(Wax, x) + np.dot(Waa, a_prev) + b)
         z = np.dot(Wya, a) + by
         y = softmax(z)
-        
+
         np.random.seed(counter+seed) 
         
         idx = np.random.choice(list(range(vocab_size)), p = y.ravel())
@@ -109,20 +121,17 @@ Wax, Waa, Wya = np.random.randn(n_a, vocab_size), np.random.randn(n_a, n_a), np.
 b, by = np.random.randn(n_a, 1), np.random.randn(vocab_size, 1)
 parameters = {"Wax": Wax, "Waa": Waa, "Wya": Wya, "b": b, "by": by}
 
-
 indices = sample(parameters, char_to_ix, 0)
 
-print('\n\nSampling function check:')
-print('Sampling indices: ', end = '')
-autocheck(indices, [12, 17, 24, 14, 13, 9, 10, 22, 24, 6, 13, 11, 12, 6, 21, 15, 21, 14, 3, 2, 1, 21, 18, 24, 
-7, 25, 6, 25, 18, 10, 16, 2, 3, 8, 15, 12, 11, 7, 1, 12, 10, 2, 7, 7, 11, 5, 6, 12, 25, 0, 0])
+#print('\n\nSampling function check:')
+#print('Sampling indices: ', end = '')
+#autocheck(indices, [12, 17, 24, 14, 13, 9, 10, 22, 24, 6, 13, 11, 12, 6, 21, 15, 21, 14, 3, 2, 1, 21, 18, 24, 
+#7, 25, 6, 25, 18, 10, 16, 2, 3, 8, 15, 12, 11, 7, 1, 12, 10, 2, 7, 7, 11, 5, 6, 12, 25, 0, 0])
 
-print(type(indices))
-
-print('List of sampled characters: ', end = '')
-autocheck([ix_to_char[i] for i in indices], ['l', 'q', 'x', 'n', 'm', 'i', 'j', 'v', 'x', 'f', 'm', 'k', 'l', 'f', 'u', 'o', 
-'u', 'n', 'c', 'b', 'a', 'u', 'r', 'x', 'g', 'y', 'f', 'y', 'r', 'j', 'p', 'b', 'c', 'h', 'o', 
-'l', 'k', 'g', 'a', 'l', 'j', 'b', 'g', 'g', 'k', 'e', 'f', 'l', 'y', '\n', '\n'])
+#print('List of sampled characters: ', end = '')
+#autocheck([ix_to_char[i] for i in indices], ['l', 'q', 'x', 'n', 'm', 'i', 'j', 'v', 'x', 'f', 'm', 'k', 'l', 'f', 'u', 'o', 
+#'u', 'n', 'c', 'b', 'a', 'u', 'r', 'x', 'g', 'y', 'f', 'y', 'r', 'j', 'p', 'b', 'c', 'h', 'o', 
+#'l', 'k', 'g', 'a', 'l', 'j', 'b', 'g', 'g', 'k', 'e', 'f', 'l', 'y', '\n', '\n'])
 
 
 # optimization
