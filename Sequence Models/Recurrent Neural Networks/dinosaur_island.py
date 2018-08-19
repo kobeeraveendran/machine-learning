@@ -123,3 +123,21 @@ print('List of sampled characters: ', end = '')
 autocheck([ix_to_char[i] for i in indices], ['l', 'q', 'x', 'n', 'm', 'i', 'j', 'v', 'x', 'f', 'm', 'k', 'l', 'f', 'u', 'o', 
 'u', 'n', 'c', 'b', 'a', 'u', 'r', 'x', 'g', 'y', 'f', 'y', 'r', 'j', 'p', 'b', 'c', 'h', 'o', 
 'l', 'k', 'g', 'a', 'l', 'j', 'b', 'g', 'g', 'k', 'e', 'f', 'l', 'y', '\n', '\n'])
+
+
+# optimization
+def optimize(X, Y, a_prev, parameters, learning_rate = 0.01):
+
+    # forward propagation
+    loss, cache = rnn_forward(X, Y, a_prev, parameters)
+
+    # backward propagation
+    gradients, a = rnn_backward(X, Y, parameters, cache)
+
+    # gradient clipping
+    gradients = clip(gradients, maxValue = 5)
+
+    parameters = update_parameters(parameters, gradients, lr = learning_rate)
+
+    return loss, gradients, a[len(X) - 1]
+
