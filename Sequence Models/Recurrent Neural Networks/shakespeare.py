@@ -10,3 +10,5 @@ from shakespeare_utils import *
 import sys
 import io
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
