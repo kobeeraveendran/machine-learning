@@ -15,16 +15,16 @@ ix_to_char = { i:ch for i, ch in enumerate(sorted(chars)) }
 print(ix_to_char)
 
 # (not part of notebook) personal function used to make automatic testing easier
-def autocheck(actual, desired, check_type = 'vector'):
-    if check_type == 'vector':
+def autocheck(actual, desired):
+    if type(actual) == np.ndarray:
         np.testing.assert_array_almost_equal(actual, desired, err_msg = 'Failed.')
         print('Passed.')
 
-    elif check_type == 'scalar':
+    elif np.isscalar(actual):
         np.testing.assert_almost_equal(actual, desired, err_msg = 'Failed.')
         print('Passed.')
 
-    elif check_type == 'shape':
+    elif type(actual) is tuple:
         print('Passed.') if actual == desired else print('Failed.')
 
 
@@ -51,8 +51,8 @@ gradients = clip(gradients, 10)
 
 print('\n\nGradient clipping check:')
 
-autocheck(gradients['dWaa'][1][2], 10.0, 'scalar')
-autocheck(gradients['dWax'][3][1], -10.0, 'scalar')
-autocheck(gradients['dWya'][1][2], 0.29713815361, 'scalar')
+autocheck(gradients['dWaa'][1][2], 10.0)
+autocheck(gradients['dWax'][3][1], -10.0)
+autocheck(gradients['dWya'][1][2], 0.29713815361)
 autocheck(gradients['db'][4], [10.0])
 autocheck(gradients['dby'][1], [8.45833407])
