@@ -172,3 +172,47 @@ autocheck(gradients['dWya'][1][2], -0.007773876032)
 autocheck(gradients['db'][4], [-0.06809825])
 autocheck(gradients['dby'][1], [0.01538192])
 autocheck(a_last[4], [-1.0])
+
+
+def model(data, ix_to_char, char_to_ix, num_iterations = 35000, n_a = 50, dino_names = 7, vocab_size = 27):
+    n_x, n_y = vocab_size, vocab_size
+
+    parameters = initialize_parameters(n_a, n_x, n_y)
+
+    loss = get_initial_loss(vocab_size, dino_names)
+
+    with open('dinos.txt') as f:
+        examples = f.readlines()
+
+    examples = [x.lower().strip() for x in examples]
+
+    np.random.seed(0)
+    np.random.shuffle(examples)
+
+    a_prev = np.zeros((n_a, 1))
+
+    for j in range(num_iterations):
+
+        index = j % len(examples)
+        X = [None] + [char_to_ix[ch] for ch in examples[index]]
+        Y = X[1:] + [char_to_ix['\n']]
+
+        curr_loss, gradients, a_prev = optimize(X, Y, a_prev, parameters)
+
+        loss = smooth(loss, curr_loss)
+
+        if j % 2000 == 0:
+            print('Iteration {}: Loss {} + \n'.format(j, loss))
+
+            seed = 0
+
+            for name in range(dino_names):
+
+                sampeld_indices = sample(parameters, char_to_ix, seed)
+                print_sample(sampeld_indices, ix_to_char)
+
+                seed += 1
+
+            print('\n')
+    
+    return parameters
