@@ -413,10 +413,10 @@ def lstm_cell_backward(da_next, dc_next, cache):
     dit = (dc_next * cct + ot * (1 - np.tanh(c_next) ** 2) * cct * da_next) * it * (1 - it)
     dft = (dc_next * c_prev + ot * (1 - np.tanh(c_next) ** 2) * c_prev * da_next) * ft * (1 - ft)
 
-    dWf = np.multiply(dft, np.vstack((a_prev, xt)).T)
-    dWi = np.multiply(dit, np.vstack((a_prev, xt)).T)
-    dWc = np.multiply(dcct, np.vstack((a_prev, xt)).T)
-    dWo = np.multiply(dot, np.vstack((a_prev, xt)).T)
+    dWf = np.dot(dft, np.vstack((a_prev, xt)).T)
+    dWi = np.dot(dit, np.vstack((a_prev, xt)).T)
+    dWc = np.dot(dcct, np.vstack((a_prev, xt)).T)
+    dWo = np.dot(dot, np.vstack((a_prev, xt)).T)
 
     dbf = np.sum(dft, axis = 1, keepdims = True)
     dbi = np.sum(dit, axis = 1, keepdims = True)
@@ -461,3 +461,57 @@ gradients = lstm_cell_backward(da_next, dc_next, cache)
 
 print('\n\nLSTM single time-step backprop check:')
 
+np.testing.assert_almost_equal(gradients['dxt'][1][2], 3.32481233367, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dxt'].shape == (3, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['da_prev'][2][3], 0.0510531874143, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['da_prev'].shape == (5, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dc_prev'][2][3], 0.797522038797, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dc_prev'].shape == (5, 10) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWf'][3][1], -0.147954838164, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWf'].shape == (5, 8) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWi'][1][2], 1.05749805523, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWi'].shape == (5,8) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWc'][3][1], 0.0890912576499, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWc'].shape == (5, 8) else print('Failed.')
+
+np.testing.assert_almost_equal(gradients['dWo'][1][2], 0.331311595289, err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dWo'].shape == (5, 8) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dbf'][4], [0.18864637], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dbf'].shape == (5, 1) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dbi'][4], [-0.40142491], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dbi'].shape == (5, 1) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dbc'][4], [0.06201546], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dbc'].shape == (5, 1) else print('Failed.')
+
+np.testing.assert_array_almost_equal(gradients['dbo'][4], [0.13893342], err_msg = 'Failed.')
+print('Passed.')
+
+print('Passed.') if gradients['dbo'].shape == (5, 1) else print('Failed.')
