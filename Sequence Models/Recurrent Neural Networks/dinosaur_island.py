@@ -56,3 +56,43 @@ autocheck(gradients['dWax'][3][1], -10.0)
 autocheck(gradients['dWya'][1][2], 0.29713815361)
 autocheck(gradients['db'][4], [10.0])
 autocheck(gradients['dby'][1], [8.45833407])
+
+
+# sampling function
+def sample(parameters, char_to_ix, seed):
+
+    Waa, Wax, Wya, by, b = parameters['Waa'], parameters['Wax'], parameters['Wya'], parameters['by'], parameters['b']
+    vocab_size = by.shape[0]
+    n_a = Waa.shape[1]
+
+    x = np.zeros((vocab_size, 1))
+    a_prev = np.zeros((n_a, 1))
+
+    indices = []
+    idx = -1
+
+    counter = 0
+    newline_character = char_to_ix['\n']
+
+    while(idx != newline_character and counter != 50):
+        a = np.tanh(np.dot(Wax, x) + np.dot(Waa, a_prev) + b)
+        z = np.dot(Wya, a_prev) + by
+        y = softmax(z)
+
+        np.random.seed(counter + seed)
+
+        idx = np.random.choice(list(range(vocab_size)), p = y.ravel())
+        indices.append(idx)
+
+        x = np.zeros((vocab_size, 1))
+        x[idx] = 1
+        
+        a_prev = a
+
+        seed += 1
+        counter += 1
+
+    if counter == 50:
+        indices.append(char_to_ix['\n'])
+
+    return indices
