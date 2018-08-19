@@ -515,3 +515,46 @@ np.testing.assert_array_almost_equal(gradients['dbo'][4], [0.13893342], err_msg 
 print('Passed.')
 
 print('Passed.') if gradients['dbo'].shape == (5, 1) else print('Failed.')
+
+
+# LSTM backprop through time
+def lstm_backward(da, caches):
+
+    (caches, x) = caches
+    (a1, c1, a0, c0, f1, i1, cc1, o1, x1, parameters) = caches[0]
+
+    n_a, m, T_x = da.shape
+    n_x, m = x1.shape
+
+    dx = np.zeros((n_x, m, T_x))
+    da0 = np.zeros((n_a, m))
+    da_prevt = da0
+    dc_prevt = da0
+    dWf = np.zeros((n_a, n_a + n_x))
+    dWi = dWf
+    dWc = dWf
+    dWo = dWf
+    dbf = np.zeros((n_a, 1))
+    dbi = dbf
+    dbc = dbf
+    dbo = dbf
+
+    for t in reversed(range(T_x)):
+        gradients = lstm_cell_backward(da_prevt + da[..., t], dc_prevt, caches[t])
+
+        dx[..., t] = gradients['dxt']
+        dWf = gradients['dWf']
+        dWi = gradients['dWi']
+        dWc = gradients['dWc']
+        dWo = gradients['dWo']
+        dbf = gradients['dbf']
+        dbi = gradients['dbi']
+        dbc = gradients['dbc']
+        dbo = gradients['dbo']
+
+    da0 = gradients['da_prev']
+
+    gradients = {"dx": dx, "da0": da0, "dWf": dWf,"dbf": dbf, "dWi": dWi,"dbi": dbi,
+                "dWc": dWc,"dbc": dbc, "dWo": dWo,"dbo": dbo}
+
+    return gradients
