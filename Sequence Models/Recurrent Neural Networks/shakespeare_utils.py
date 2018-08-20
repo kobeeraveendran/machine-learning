@@ -144,8 +144,13 @@ def generate_output():
     sentence = ('{0:0>' + str(Tx) + '}').format(usr_input).lower()
     generated += usr_input 
 
-    sys.stdout.write("\n\nHere is your poem: \n\n") 
+    file = open('poem_output.txt', 'a')
+
+    sys.stdout.write("\n\nHere is your poem: \n\n")
+    file.write('\n\nNew poem: \n\n')
     sys.stdout.write(usr_input)
+    file.write(usr_input)
+
     for i in range(400):
 
         x_pred = np.zeros((1, Tx, len(chars)))
@@ -162,7 +167,11 @@ def generate_output():
         sentence = sentence[1:] + next_char
 
         sys.stdout.write(next_char)
+        file.write(next_char)
+        
         sys.stdout.flush()
 
         if next_char == '\n':
             continue
+
+    file.close()
