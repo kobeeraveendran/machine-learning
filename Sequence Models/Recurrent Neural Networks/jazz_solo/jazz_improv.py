@@ -17,4 +17,13 @@ from keras.utils import to_categorical
 from keras.optimizers import Adam
 from keras import backend as K
 
-IPython.display.Audio('./data/30s_seq.mp3')
+# only in interactive notebook
+#IPython.display.Audio('data/30s_seq.mp3')
+
+X, Y, n_values, indices_values = load_music_utils()
+
+print('Shape of X: ', X.shape)
+print('Number of training examples: ', X.shape[0])
+print('T_x (length of sequence): ', X.shape[1])
+print('Total number of unique values: ', n_values)
+print('Shape of Y: ', Y.shape)
