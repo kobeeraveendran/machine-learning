@@ -155,3 +155,10 @@ def nin_cnn(model_input):
 
 nin_cnn_model = nin_cnn(model_input)
 
+start3 = time.time()
+_ = compile_and_train(nin_cnn_model, 20)
+end3 = time.time()
+
+print('training time for NIN - CNN: {} s ({} mins.)'.format(end3 - start3, (end3 - start3) / 60.0))
+
+print('error for NIN - CNN: ', evaluate_error(nin_cnn_model))
