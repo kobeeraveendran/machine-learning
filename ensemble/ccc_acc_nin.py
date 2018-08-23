@@ -74,11 +74,11 @@ def compile_and_train(model, num_epochs):
 
     return history
 
-start1 = time.time()
-_ = compile_and_train(conv_pool_cnn_model, 20)
-end1 = time.time()
+#start1 = time.time()
+#_ = compile_and_train(conv_pool_cnn_model, 20)
+#end1 = time.time()
 
-print('training time for ConvPool - CNN - C: {} s'.format(end1 - start1))
+#print('training time for ConvPool - CNN - C: {} s ({} mins.)'.format(end1 - start1, (end1 - start1) / 60.0))
 
 def evaluate_error(model):
 
@@ -89,7 +89,7 @@ def evaluate_error(model):
 
     return error
 
-print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
+#print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
 
 # model 2: ALL - CNN - C
 def all_cnn(model_input):
@@ -120,4 +120,38 @@ start2 = time.time()
 _ = compile_and_train(all_cnn_model, 20)
 end2 = time.time()
 
-print('training time for All - CNN - C: {} s'.format(end2 - start2))
+print('training time for All - CNN - C: {} s ({} mins.)'.format(end2 - start2, (end2 - start2) / 60.0))
+
+print('error for All - CNN: ', evaluate_error(all_cnn_model))
+
+def nin_cnn(model_input):
+
+    # block 1
+    x = model_input
+    x = Conv2D(32, kernel_size = (5, 5), activation = 'relu', padding = 'valid')(x)
+    x = Conv2D(32, kernel_size = (1, 1), activation = 'relu')(x)
+    x = Conv2D(32, kernel_size = (1, 1), activation = 'relu')(x)
+    x = MaxPooling2D(pool_size = (2, 2))(x)
+    x = Dropout(0.5)(x)
+
+    # block 2
+    x = Conv2D(64, kernel_size = (3, 3), activation = 'relu', padding = 'valid')(x)
+    x = Conv2D(64, kernel_size = (1, 1), activation = 'relu')(x)
+    x = Conv2D(64, kernel_size = (1, 1), activation = 'relu')(x)
+    x = MaxPooling2D(kernel_size = (2, 2))(x)
+    x = Dropout(0.5)(x)
+
+    # block 3
+    x = Conv2D(128, (3, 3), activation = 'relu', padding = 'valid')(x)
+    x = Conv2D(32, kernel_size = (1, 1), activation ='relu')(x)
+    x = Conv2D(10, kernel_size = (1, 1))(x)
+
+    x = GlobalAveragePooling2D()(x)
+    x = Activation(activation = 'softmax')(x)
+
+    model = Model(model_input, x, name = 'nin_cnn')
+
+    return model
+
+nin_cnn_model = nin_cnn(model_input)
+
