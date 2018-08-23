@@ -6,6 +6,16 @@ from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.optimizers import Adam
 from keras.datasets import cifar10
 import numpy as np
+import time
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+import keras.backend as K
+
+config = K.tf.ConfigProto()
+config.gpu_options.allow_growth = True
+session = K.tf.Session(config = config)
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
@@ -35,7 +45,7 @@ def conv_pool_cnn(model_input):
     x = MaxPooling2D(pool_size = (3, 3), strides = 2)(x)
 
     x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
-    x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')
+    x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
     x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
     x = MaxPooling2D(pool_size = (3, 3), strides = 2)(x)
 
@@ -64,4 +74,8 @@ def compile_and_train(model, num_epochs):
 
     return history
 
-_ = compile_and_train(conv_pool_cnn(model_input), 20)
+start1 = time.time()
+_ = compile_and_train(conv_pool_cnn_model, 20)
+end1 = time.time()
+
+print('training time for ConvPool - CNN - C: {} s'.format(end1 - start1))
