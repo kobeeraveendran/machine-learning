@@ -79,3 +79,14 @@ _ = compile_and_train(conv_pool_cnn_model, 20)
 end1 = time.time()
 
 print('training time for ConvPool - CNN - C: {} s'.format(end1 - start1))
+
+def evaluate_error(model):
+
+    pred = model.predict(x_test, batch_size = 32)
+    pred = np.argmax(pred, axis = 1)
+    pred = np.expand_dims(pred, axis = 1)
+    error = np.sum(np.not_equal(pred, y_test)) / y_test.shape[0]
+
+    return error
+
+print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
