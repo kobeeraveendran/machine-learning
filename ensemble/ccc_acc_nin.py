@@ -14,6 +14,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import os
+import matplotlib.pyplot as plt
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -213,3 +214,13 @@ print('target shape: ', y_test.shape)
 #print('accuracy: ', accuracy)
 
 print('3-model ensemble accuracy: {}%'.format(accuracy * 100))
+
+def targeted_predict(index, predictions, targets):
+
+    print('predicted: ', predictions[index])
+    print('actual: ', targets[index])
+
+    plt.imshow(x_test[index])
+    plt.show()
+
+targeted_predict(10, ensemble_preds, y_test)
