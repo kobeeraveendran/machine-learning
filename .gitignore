@@ -3,3 +3,5 @@ Convolutional Neural Networks/Object Detection/model_data/yolo.h5
 Convolutional Neural Networks/Special Applications/pretrained-model/imagenet-vgg-verydeep-19.mat
 Sequence Models/Recurrent Neural Networks/models/model_shakespeare_kiank_350_epoch.h5
 Sequence Models/Recurrent Neural Networks/models/model_shakespeare_kiank.h5
+ensemble/logs/*
+ensemble/weights/*
