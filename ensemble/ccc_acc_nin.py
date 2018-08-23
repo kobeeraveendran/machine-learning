@@ -90,3 +90,34 @@ def evaluate_error(model):
     return error
 
 print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
+
+# model 2: ALL - CNN - C
+def all_cnn(model_input):
+
+    x = model_input
+    x = Conv2D(96, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
+    x = Conv2D(96, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
+    x = Conv2D(96, kernel_size = (3, 3), strides = 2, activation = 'relu', padding = 'same')(x)
+
+    x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
+    x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
+    x = Conv2D(192, kernel_size = (3, 3), strides = 2, activation = 'relu', padding = 'same')(x)
+
+    x = Conv2D(192, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
+    x = Conv2D(192, kernel_size = (1, 1), activation = 'relu')(x)
+    x = Conv2D(10, kernel_size = (1, 1))(x)
+
+    x = GlobalAveragePooling2D()(x)
+    x = Activation(activation = 'softmax')(x)
+
+    model = Model(model_input, x, name = 'all_cnn')
+
+    return model
+
+all_cnn_model = all_cnn(model_input)
+
+start2 = time.time()
+_ = compile_and_train(all_cnn_model, 20)
+end2 = time.time()
+
+print('training time for All - CNN - C: {} s'.format(end2 - start2))
