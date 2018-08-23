@@ -1,10 +1,16 @@
 from keras.models import Model, Input
 from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Activation, Average, Dropout
 from keras.utils import to_categorical
+from keras.metrics import categorical_accuracy
 from keras.losses import categorical_crossentropy
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.optimizers import Adam
 from keras.datasets import cifar10
+from sklearn.metrics import accuracy_score
+
+from keras import backend as K
+
+import tensorflow as tf
 import numpy as np
 import time
 import os
@@ -74,11 +80,11 @@ def compile_and_train(model, num_epochs):
 
     return history
 
-start1 = time.time()
-_ = compile_and_train(conv_pool_cnn_model, 30)
-end1 = time.time()
+#start1 = time.time()
+#_ = compile_and_train(conv_pool_cnn_model, 30)
+#end1 = time.time()
 
-print('training time for ConvPool - CNN - C: {} s ({} mins.)'.format(end1 - start1, (end1 - start1) / 60.0))
+#print('training time for ConvPool - CNN - C: {} s ({} mins.)'.format(end1 - start1, (end1 - start1) / 60.0))
 
 def evaluate_error(model):
 
@@ -89,7 +95,7 @@ def evaluate_error(model):
 
     return error
 
-print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
+#print('error for ConvPool - CNN: ', evaluate_error(conv_pool_cnn_model))
 
 # model 2: ALL - CNN - C
 def all_cnn(model_input):
@@ -116,13 +122,13 @@ def all_cnn(model_input):
 
 all_cnn_model = all_cnn(model_input)
 
-start2 = time.time()
-_ = compile_and_train(all_cnn_model, 30)
-end2 = time.time()
+#start2 = time.time()
+#_ = compile_and_train(all_cnn_model, 30)
+#end2 = time.time()
 
-print('training time for All - CNN - C: {} s ({} mins.)'.format(end2 - start2, (end2 - start2) / 60.0))
+#print('training time for All - CNN - C: {} s ({} mins.)'.format(end2 - start2, (end2 - start2) / 60.0))
 
-print('error for All - CNN: ', evaluate_error(all_cnn_model))
+#print('error for All - CNN: ', evaluate_error(all_cnn_model))
 
 def nin_cnn(model_input):
 
@@ -155,13 +161,13 @@ def nin_cnn(model_input):
 
 nin_cnn_model = nin_cnn(model_input)
 
-start3 = time.time()
-_ = compile_and_train(nin_cnn_model, 30)
-end3 = time.time()
+#start3 = time.time()
+#_ = compile_and_train(nin_cnn_model, 30)
+#end3 = time.time()
 
-print('training time for NIN - CNN: {} s ({} mins.)'.format(end3 - start3, (end3 - start3) / 60.0))
+#print('training time for NIN - CNN: {} s ({} mins.)'.format(end3 - start3, (end3 - start3) / 60.0))
 
-print('error for NIN - CNN: ', evaluate_error(nin_cnn_model))
+#print('error for NIN - CNN: ', evaluate_error(nin_cnn_model))
 
 
 # ensemble of the three models above
@@ -169,3 +175,41 @@ conv_pool_cnn_model = conv_pool_cnn(model_input)
 all_cnn_model = all_cnn(model_input)
 nin_cnn_model = nin_cnn(model_input)
 
+# load best weights for each model (see models folder)
+# NOTE: adjust file path names as necessary after training on your own machine
+conv_pool_cnn_model.load_weights('weights/conv_pool_cnn.27-0.10.hdf5')
+all_cnn_model.load_weights('weights/all_cnn.30-0.07.hdf5')
+nin_cnn_model.load_weights('weights/nin_cnn.30-0.86.hdf5')
+
+models = [conv_pool_cnn_model, all_cnn_model, nin_cnn_model]
+
+def ensemble(models, model_input):
+
+    outputs = [model.outputs[0] for model in models]
+    y = Average()(outputs)
+
+    model = Model(model_input, y, name = 'ensemble')
+
+    return model
+
+ensemble_model = ensemble(models, model_input)
+
+print('error for ensemble of the three models: ', evaluate_error(ensemble_model))
+
+ensemble_preds = ensemble_model.predict(x_test)
+ensemble_preds = np.argmax(ensemble_preds, axis = 1)
+y_test = y_test.reshape(y_test.shape[0], )
+
+similarity = np.equal(ensemble_preds, y_test)
+
+accuracy = np.sum(similarity) / len(y_test)
+
+print('predictions shape: ', ensemble_preds.shape)
+print('target shape: ', y_test.shape)
+#equal = K.equal(y_test, np.argmax(ensemble_preds, axis = 1))
+#accuracy = tf.reduce_mean(tf.cast(equal, 'float'))
+#accuracy = categorical_accuracy(y_test, np.expand_dims(np.argmax(ensemble_preds, axis = 1), axis = 1))
+
+#print('accuracy: ', accuracy)
+
+print('3-model ensemble accuracy: {}%'.format(accuracy * 100))
