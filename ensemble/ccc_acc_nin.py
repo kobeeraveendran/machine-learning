@@ -39,6 +39,8 @@ print('y_test shape: ', y_test.shape)
 input_shape = x_train[0, ...].shape
 model_input = Input(shape = input_shape)
 
+image_classes = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
 
 # model 1: ConvPool - CNN - C
 def conv_pool_cnn(model_input):
@@ -217,10 +219,22 @@ print('3-model ensemble accuracy: {}%'.format(accuracy * 100))
 
 def targeted_predict(index, predictions, targets):
 
-    print('predicted: ', predictions[index])
-    print('actual: ', targets[index])
+
+    print('\n\n---------------------------\n\n')
+    print('predicted: {} ({})'.format(image_classes[predictions[index]], predictions[index]))
+    print('actual: {} ({})'.format(image_classes[targets[index]], targets[index]))
 
     plt.imshow(x_test[index])
     plt.show()
 
+# tests
 targeted_predict(10, ensemble_preds, y_test)
+targeted_predict(233, ensemble_preds, y_test)
+targeted_predict(5679, ensemble_preds, y_test)
+targeted_predict(4832, ensemble_preds, y_test)
+targeted_predict(4911, ensemble_preds, y_test)
+targeted_predict(6082, ensemble_preds, y_test)
+targeted_predict(9262, ensemble_preds, y_test)
+targeted_predict(2072, ensemble_preds, y_test)
+targeted_predict(8112, ensemble_preds, y_test)
+targeted_predict(3034, ensemble_preds, y_test)
