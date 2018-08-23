@@ -27,6 +27,8 @@ model_input = Input(shape = input_shape)
 def conv_pool_cnn(model_input):
     
     x = model_input
+
+    # "Striving for Simplicity: The All Convolutional Net"
     x = Conv2D(96, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
     x = Conv2D(96, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
     x = Conv2D(96, kernel_size = (3, 3), activation = 'relu', padding = 'same')(x)
@@ -48,3 +50,18 @@ def conv_pool_cnn(model_input):
 
     return model
 
+conv_pool_cnn_model = conv_pool_cnn(model_input)
+
+def compile_and_train(model, num_epochs):
+    model.compile(loss = categorical_crossentropy, optimizer = Adam(), metrics = ['accuracy'])
+
+    filepath = 'weights/' + model.name + '.{epoch:02d}-{loss:.2f}.hdf5'
+    checkpoint = ModelCheckpoint(filepath, monitor = 'loss', verbose = 0, save_weights_only = True, save_best_only = True, mode = 'auto', period = 1)
+
+    tensor_board = TensorBoard(log_dir = 'logs/', histogram_freq = 0, batch_size = 32)
+
+    history = model.fit(x_train, y_train, batch_size = 32, epochs = num_epochs, verbose = 1, callbacks = [checkpoint, tensor_board], validation_split = 0.2)
+
+    return history
+
+_ = compile_and_train(conv_pool_cnn(model_input), 20)
