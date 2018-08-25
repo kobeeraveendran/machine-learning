@@ -6,44 +6,35 @@ import matplotlib.pyplot as plt
 
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Reshape, InputLayer
+from keras.layers import Dense, Flatten, Conv2D, LeakyReLU, Dropout, Activation
 from keras.regularizers import L1L2
+
+from keras_adversarial import AdversarialModel, simple_gan, gan_targets
+from keras_adversarial import AdversarialOptimizerSimultaneous, normal_latent_sampling
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-seed = 128
-rng = np.random.RandomState(seed)
-
 (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 
-x_train = x_train / 255.0
+d_model = Sequential()
+dropout = 0.4
 
-img = x_train[0]
+input_shape = (28, 28, 1)
 
-plt.imshow(img, cmap = 'gray')
-plt.show()
+d_model.add(Conv2D(64, kernel_size = 5, strides = 2, input_shape = input_shape, padding = 'same', activation = LeakyReLU(alpha = 0.2)))
+d_model.add(Dropout(dropout))
 
-g_input_shape = 100
-d_input_shape = (28, 28)
-hidden_1_num_units = 500
-hidden_2_num_units = 500
-g_output_num_units = 784
-d_output_num_units = 1
-num_epochs = 25
-batch_size = 128
+d_model.add(Conv2D(128, kernel_size = 5, strides = 2, padding = 'same', activation = LeakyReLU(alpha = 0.2)))
+d_model.add(Dropout(dropout))
 
-# generator model
-model1 = Sequential()
-model1.add(InputLayer(input_shape = g_input_shape))
-model1.add(Dense(units = hidden_1_num_units, activation = 'relu',  kernel_regularizer = L1L2(l1 = 1e-5, l2 = 1e-5)))
-model1.add(Dense(units = hidden_2_num_units, activation = 'relu', kernel_regularizer = L1L2(l1 = 1e-5, l2 = 1e-5)))
-model1.add(Dense(units = g_output_num_units, activation = 'sigmoid', kernel_regularizer = L1L2(l1 = 1e-5, l2 = 1e-5)))
-model1.add(Reshape(d_input_shape))
+d_model.add(Conv2D(256, kernel_size = 5, strides = 2, padding = 'same', activation = LeakyReLU(alpha = 0.2)))
+d_model.add(Dropout(dropout))
 
-# discriminator model
-model2 = Sequential()
-model2.add(InputLayer(input_shape = d_input_shape))
-model2.add(Flatten())
-model2.add(Dense(units = hidden_1_num_units, activation = 'relu', kernel_regularizer = L1L2(1e-5, 1e-5)))
-model2.add(Dense(units = hidden_2_num_units, activation = 'relu', kernel_regularizer = L1L2(1e-5, 1e-5)))
-model2.add(Dense(units = d_output_num_units, activation = 'sigmoid', kernel_regularizer = L1L2(1e-5, 1e-5)))
+d_model.add(Conv2D(512, kernel_size = 5, strides = 2, padding = 'same', activation = LeakyReLU(alpha = 0.2)))
+d_model.add(Dropout(dropout))
+
+d_model.add(Flatten())
+d_model.add(Dense(units = 1))
+d_model.add(Activation(activation = 'sigmoid'))
+
+d_model.summary()
