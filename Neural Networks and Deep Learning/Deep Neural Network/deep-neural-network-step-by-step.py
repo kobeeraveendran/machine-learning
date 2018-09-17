@@ -201,7 +201,7 @@ def L_model_backward(AL, Y, caches):
     m = AL.shape[1]
     Y = Y.reshape(AL.shape)
 
-    dAL = - (np.divide(y, AL) + np.divide(1 - Y, 1 - AL)) # derivative of cost w.r.t. AL
+    dAL = - (np.divide(Y, AL) + np.divide(1 - Y, 1 - AL)) # derivative of cost w.r.t. AL
     current_cache = caches[L - 1]
     grads['dA' + str(L)], grads['dW' + str(L)], grads['db' + str(L)] = linear_activation_backward(dAL, current_cache, activation = 'sigmoid')
 
