@@ -68,9 +68,10 @@ history = model.fit(x_train, y_train,
           validation_data=(x_test, y_test))
 
 plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
 plt.title('Model Accuracy')
 plt.xlabel('epoch')
-plt.ylabel('accurcy')
+plt.ylabel('accuracy')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.show()
 
