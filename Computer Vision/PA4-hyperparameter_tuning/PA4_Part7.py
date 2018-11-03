@@ -7,12 +7,13 @@ Gets to 99.25% test accuracy after 12 epochs
 
 from __future__ import print_function
 import keras
-from keras.datasets import mnist
+from keras.datasets import mnist, fashion_mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D
 from keras import backend as K
 import matplotlib.pyplot as plt
+import time
 
 batch_size = 128
 num_classes = 10
@@ -22,7 +23,7 @@ epochs = 30
 img_rows, img_cols = 28, 28
 
 # the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
 if K.image_data_format() == 'channels_first':
     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -46,8 +47,6 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
 # custom LeNet-5 model by me
-
-# Maximum pooling version
 model = Sequential()
 model.add(Conv2D(6, kernel_size = (5, 5), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2, 2), strides = 2))
@@ -58,20 +57,6 @@ model.add(Dense(120, activation = 'relu'))
 model.add(Dense(84, activation = 'relu'))
 model.add(Dense(10, activation = 'softmax'))
 
-# Average pooling version
-'''
-model = Sequential()
-model.add(Conv2D(6, kernel_size = (5, 5), activation = 'relu'))
-model.add(AveragePooling2D(pool_size = (2, 2), strides = 2))
-model.add(Conv2D(16, kernel_size = (5, 5), activation = 'relu'))
-model.add(AveragePooling2D(pool_size = (2, 2), strides = 2))
-model.add(Flatten())
-model.add(Dense(120, activation = 'relu'))
-model.add(Dense(84, activation = 'relu'))
-model.add(Dense(10, activation = 'softmax'))
-'''
-
-# default, base model
 '''
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
@@ -90,20 +75,70 @@ model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
 
+# training time calculation
+
+lenet_start = time.time()
+
 history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
           validation_data=(x_test, y_test))
 
+lenet_end = time.time()
+
+print('LeNet-5 Training time on Fashion MNIST: ' + str(lenet_end - lenet_start))
+
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('Model Accuracy')
+plt.title('LeNet-5 Accuracy (Fashion MNIST)')
 plt.xlabel('epoch')
 plt.ylabel('accuracy')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.show()
 
 score = model.evaluate(x_test, y_test, verbose=0)
+print('Test loss:', score[0])
+print('Test accuracy:', score[1])
+
+
+######################### now using the base model on Fashion MNIST ####################
+model = Sequential()
+model.add(Conv2D(32, kernel_size = (3, 3), activation = 'relu', input_shape = input_shape))
+model.add(Conv2D(64, (3, 3), activation = 'relu'))
+model.add(MaxPooling2D(pool_size = (2, 2)))
+model.add(Dropout(0.25))
+model.add(Flatten())
+model.add(Dense(128, activation = 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation = 'softmax'))
+
+model.compile(loss = keras.losses.categorical_crossentropy,
+              optimizer = keras.optimizers.Adadelta(), 
+              metrics = ['accuracy'])
+
+# training time calculation
+
+base_start = time.time()
+
+history = model.fit(x_train, y_train, 
+                    batch_size = batch_size, 
+                    epochs = epochs, 
+                    verbose = 1, 
+                    validation_data = (x_test, y_test))
+
+base_end = time.time()
+
+print('Base model Training time on Fashion MNIST: ' + str(base_end - base_start))
+
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Base model accuracy (Fashion MNIST)')
+plt.xlabel('epoch')
+plt.ylabel('accuracy')
+plt.legend(['train', 'test'], loc = 'upper left')
+plt.show()
+
+score = model.evaluate(x_test, y_test, verbose = 0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])

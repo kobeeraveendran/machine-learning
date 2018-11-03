@@ -71,7 +71,7 @@ plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('Model Loss')
 plt.xlabel('epoch')
-plt.ylabel('accuracy')
+plt.ylabel('loss')
 plt.legend(['train', 'test'], loc = 'upper left')
 plt.show()
 
