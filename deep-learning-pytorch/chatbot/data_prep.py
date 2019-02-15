@@ -92,3 +92,5 @@ def createFormattedFile(datafile):
 
     print('\nSample lines from file:')
     printLines(datafile)
+
+    return datafile

@@ -14,6 +14,7 @@ import itertools
 import math
 
 from data_prep import printLines, createFormattedFile
+from vocabulary import loadPrepareData, trimRareWords
 
 
 USE_CUDA = torch.cuda.is_available()
@@ -35,3 +36,16 @@ if os.path.exists(os.path.join(corpus, 'formatted_movie_lines.txt')):
 else:
     createFormattedFile(os.path.join(corpus, 'formatted_movie_lines.txt'))
 
+datafile = os.path.join(corpus, 'formatted_movie_lines.txt')
+
+save_dir = os.path.join('data', 'save')
+voc, pairs = loadPrepareData(corpus, corpus_name, datafile, save_dir)
+
+print('\npairs: ')
+
+for pair in pairs[:10]:
+    print(pair)
+
+print('\n')
+
+pairs = trimRareWords(voc, pairs)
