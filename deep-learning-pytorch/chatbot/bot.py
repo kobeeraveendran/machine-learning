@@ -30,23 +30,3 @@ def printLines(file, n = 10):
 
 print('\nCorpus preview: \n\n----------------\n')
 printLines(os.path.join(corpus, 'movie_lines.txt'))
-
-
-# create formatted data file
-# - file is of the format: lineID +++$+++ characterID +++$+++ movieID +++$+++ character +++$+++ text
-# turn each line into a dict following the same pattern
-
-def loadLines(filename, fields):
-    lines = {}
-
-    with open(filename, 'r', encoding = 'iso-8859-1') as f:
-        for line in f:
-            values = line.split('+++$+++')
-            lineObj = {}
-
-            for i, field in enumerate(fields):
-                lineObj[field] = values[i]
-
-            lines[lineObj['lineID']] = lineObj
-
-    return lines
