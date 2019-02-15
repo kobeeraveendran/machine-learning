@@ -15,6 +15,7 @@ import math
 
 from data_prep import printLines, createFormattedFile
 from vocabulary import loadPrepareData, trimRareWords
+from vocabulary import batch2TrainData
 
 
 USE_CUDA = torch.cuda.is_available()
@@ -49,3 +50,15 @@ for pair in pairs[:10]:
 print('\n')
 
 pairs = trimRareWords(voc, pairs)
+
+# example with tensors
+small_batch_size = 5
+batches = batch2TrainData(voc, [random.choice(pairs) for _ in range(small_batch_size)])
+input_variable, lengths, target_variable, mask, max_target_len = batches
+
+print('\n\n')
+print('input variable: ', input_variable)
+print('lengths: ', lengths)
+print('target variable: ', target_variable)
+print('mask: ', mask)
+print('max target length: ', max_target_len)
