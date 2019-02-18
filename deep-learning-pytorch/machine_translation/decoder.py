@@ -49,7 +49,7 @@ class AttnDecoderRNN(nn.Module):
         embedded = self.embedding(input).view(1, 1, -1)
         embedded = self.dropout(embedded)
 
-        attn_weights = F.softmax(self.attn(torch.cat((embedded[0], hiddne[0]), 1)), dim = 1)
+        attn_weights = F.softmax(self.attn(torch.cat((embedded[0], hidden[0]), 1)), dim = 1)
         attn_applied = torch.bmm(attn_weights.unsqueeze(0), encoder_outputs.unsqueeze(0))
 
         output = torch.cat((embedded[0], attn_applied[0]), 1)
