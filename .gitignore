@@ -6,4 +6,5 @@ Sequence Models/Recurrent Neural Networks/models/model_shakespeare_kiank.h5
 ensemble/logs/*
 ensemble/weights/*
 deep-learning-pytorch/chatbot/data
+deep-learning-pytorch/machine_translation/data
 .DS_Store
