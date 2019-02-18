@@ -23,7 +23,7 @@ print('Complete.')
 def item(id):
     return ds.loc[ds['id'] == id]['description'].tolist()[0].split(' - ')[0]
 
-def recommend(item_id, num):
+def recommend(item_id, num = 3):
     print('Recommending {0} products similar to {1} ...'.format(num, item(item_id)))
     print('-------')
 
@@ -34,3 +34,9 @@ def recommend(item_id, num):
 
 
 recommend(item_id = 11, num = 5)
+
+# further tests
+for i in range(1, 11):
+    print('\n')
+    recommend(item_id = i)
+    print('\n')
