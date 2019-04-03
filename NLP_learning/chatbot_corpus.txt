@@ -4,25 +4,6 @@ The term "ChatterBot" was originally coined by Michael Mauldin (creator of the f
 
 Beyond chatbots, Conversational AI refers to the use of messaging apps, speech-based assistants and chatbots to automate communication and create personalized customer experiences at scale.[6]
 
-
-Contents
-1	Background
-2	Development
-3	Application
-3.1	Messaging apps
-3.1.1	As part of company apps and websites
-3.2	Company internal platforms
-3.3	Banking
-3.4	Toys
-3.5	Chatbots in Medicine and for Mental Health
-4	Chatbot development platforms
-5	Malicious use
-6	Examples of malicious uses for Chatbots
-7	Limitations of Chatbots
-8	Chatbots killing jobs
-9	See also
-10	Citations
-11	References
 Background
 In 1950, Alan Turing's famous article "Computing Machinery and Intelligence" was published,[7] which proposed what is now called the Turing test as a criterion of intelligence. This criterion depends on the ability of a computer program to impersonate a human in a real-time written conversation with a human judge, sufficiently well that the judge is unable to distinguish reliably—on the basis of the conversational content alone—between the program and a real human. The notoriety of Turing's proposed test stimulated great interest in Joseph Weizenbaum's program ELIZA, published in 1966, which seemed to be able to fool users into believing that they were conversing with a real human. However Weizenbaum himself did not claim that ELIZA was genuinely intelligent, and the introduction to his paper presented it more as a debunking exercise:
 
